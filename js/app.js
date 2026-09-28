@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
+  
+  // تهيئة أقسام الفيديوهات والسلاسل
+  try { initVideoSections(); } catch(e) {}
 });
 
 // === تبديل الوضع ===
