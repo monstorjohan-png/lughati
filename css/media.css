@@ -90,7 +90,6 @@
 .video-info {
   padding: var(--space-3) var(--space-4);
 }
-
 .video-info h4 {
   font-size: var(--font-size-sm);
   color: var(--text-primary);
@@ -403,9 +402,96 @@
   font-weight: 700;
 }
 
+/* === مجموعات الفيديوهات === */
+.video-group {
+  margin-bottom: var(--space-6);
+}
+
+.video-group-title {
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+  padding-bottom: var(--space-2);
+  border-right: 4px solid;
+  padding-right: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.videos-grid-inner {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.video-badge {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: var(--gradient-gold);
+  color: var(--bg-dark);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.video-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.video-channel {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.video-actions a.btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* === قنوات يوتيوب === */
+.channels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+
+.channel-card {
+  display: block;
+  background: var(--gradient-card);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.channel-card:hover {
+  border-color: #ef4444;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.channel-card strong {
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.channel-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
 /* === الاستجابة === */
 @media (max-width: 768px) {
-  .videos-grid {
+  .videos-grid,
+  .videos-grid-inner {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
   

@@ -417,42 +417,31 @@ function addConvMessage(type, text) {
 }
 
 function startVoiceInput() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    showToast('التعرف على الصوت غير مدعوم في متصفحك');
-    return;
-  }
-
-  const recognition = new SpeechRecognition();
-  const langMap = { english: 'en-US', french: 'fr-FR', spanish: 'es-ES', german: 'de-DE', japanese: 'ja-JP', chinese: 'zh-CN' };
-  recognition.lang = langMap[selectedLanguage] || 'en-US';
-  recognition.interimResults = false;
-
   const micBtn = document.querySelector('.conv-mic');
+  const input = document.getElementById('convInput');
+
   if (micBtn) {
     micBtn.classList.add('listening');
-    micBtn.textContent = '● جاري الاستماع...';
+    micBtn.textContent = '●';
   }
 
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    document.getElementById('convInput').value = transcript;
+  const recognition = startVoiceRecognition((transcript, isFinal) => {
+    if (input) input.value = transcript;
+    if (isFinal) {
+      if (micBtn) {
+        micBtn.classList.remove('listening');
+        micBtn.textContent = '●';
+      }
+      sendConvMessage();
+    }
+  }, selectedLanguage);
+
+  if (!recognition) {
     if (micBtn) {
       micBtn.classList.remove('listening');
       micBtn.textContent = '●';
     }
-    sendConvMessage();
-  };
-
-  recognition.onerror = () => {
-    if (micBtn) {
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '●';
-    }
-    showToast('لم يتم التعرف على الصوت');
-  };
-
-  recognition.start();
+  }
 }
 
 function escapeHtml(text) {

@@ -39,20 +39,50 @@ const SpeechEngine = {
 
       window.speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = { english: 'en-US', french: 'fr-FR', spanish: 'es-ES', german: 'de-DE', japanese: 'ja-JP', chinese: 'zh-CN' }[lang] || 'en-US';
-      utterance.rate = options.rate || 0.8;
-      utterance.pitch = options.pitch || 1;
-      utterance.volume = options.volume || 1;
+      // تقسيم النص الطويل إلى جمل (بعض المتصفحات تقطع النصوص الطويلة)
+      const chunks = this.chunkText(text, 180);
+      let idx = 0;
 
-      const voice = this.getBestVoice(lang);
-      if (voice) utterance.voice = voice;
+      const speakNext = () => {
+        if (idx >= chunks.length) { resolve(); return; }
+        const utterance = new SpeechSynthesisUtterance(chunks[idx]);
+        utterance.lang = { english: 'en-US', french: 'fr-FR', spanish: 'es-ES', german: 'de-DE', japanese: 'ja-JP', chinese: 'zh-CN' }[lang] || 'en-US';
+        utterance.rate = options.rate || 0.85;
+        utterance.pitch = options.pitch || 1;
+        utterance.volume = options.volume || 1;
 
-      utterance.onend = () => resolve();
-      utterance.onerror = () => resolve();
+        const voice = this.getBestVoice(lang);
+        if (voice) utterance.voice = voice;
 
-      window.speechSynthesis.speak(utterance);
+        utterance.onend = () => { idx++; speakNext(); };
+        utterance.onerror = () => { idx++; speakNext(); };
+
+        window.speechSynthesis.speak(utterance);
+      };
+
+      speakNext();
     });
+  },
+
+  // تقسيم النص إلى جمل
+  chunkText(text, maxLen) {
+    const clean = text.replace(/\n+/g, '. ').replace(/\s+/g, ' ').trim();
+    if (clean.length <= maxLen) return [clean];
+    
+    const sentences = clean.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [clean];
+    const chunks = [];
+    let current = '';
+    
+    for (const s of sentences) {
+      if ((current + s).length > maxLen && current) {
+        chunks.push(current.trim());
+        current = s;
+      } else {
+        current += s;
+      }
+    }
+    if (current.trim()) chunks.push(current.trim());
+    return chunks.length ? chunks : [clean];
   },
 
   // نطق متعدد الجمل
