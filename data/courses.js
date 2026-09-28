@@ -5,6 +5,73 @@
 const COURSES = {
   english: [
     {
+      id: 'eng_zae_1',
+      title: 'Z American English — كورس إبراهيم عادل الكامل',
+      teacher: 'إبراهيم عادل',
+      teacherTitle: 'مؤسس قناة Z American English — 12.8M مشترك',
+      duration: '20+ ساعة',
+      lessons: 50,
+      level: 'مبتدئ',
+      rating: 4.9,
+      students: 12800000,
+      image: '🇬🇧',
+      color: '#b8860b',
+      youtube: 'https://www.youtube.com/@ZAmericanEnglish',
+      playlist: 'PLp22-4PivYmLBmV2wctgqyyRlIs1MhmNr',
+      curriculum: [
+        { id: 1, title: 'كورس الصوتيات — المستوى الأول', duration: '30 درس', type: 'فيديو', description: 'تعلم النطق الصحيح من الصفر مع إبراهيم عادل', videoId: 'm8VUaW1b_z8' },
+        { id: 2, title: 'كورس القواعد — المستوى الأول', duration: '20 درس', type: 'فيديو', description: 'شرح كامل للقواعد الأساسية بطريقة مبسطة', videoId: '9cDYq1cun8o' },
+        { id: 3, title: 'كورس المحادثة', duration: '25 درس', type: 'عملي', description: 'تعلم التحدث في المواقف اليومية', videoId: 'Th9S81mblxo' },
+        { id: 4, title: 'كورس المفردات', duration: '40 درس', type: 'فيديو', description: 'أهم الكلمات المستخدمة في الحياة اليومية', videoId: 'dNunBVGnnzE' },
+        { id: 5, title: 'كورس الاستماع', duration: '20 درس', type: 'عملي', description: 'تحسين مهارة الاستماع تدريجياً', videoId: 'm8VUaW1b_z8' },
+        { id: 6, title: 'كورس الكتابة', duration: '15 درس', type: 'عملي', description: 'كتابة رسائل وفقرات بالإنجليزية', videoId: '9cDYq1cun8o' },
+        { id: 7, title: 'خطة الدراسة الكاملة', duration: '1 درس', type: 'مراجعة', description: 'كيف تدرس بالترتيب الصحيح من القناة', videoId: '9cDYq1cun8o' },
+        { id: 8, title: 'كورس القراءة', duration: '15 درس', type: 'عملي', description: 'تحسين مهارة القراءة والفهم', videoId: 'Th9S81mblxo' }
+      ]
+    },
+    {
+      id: 'eng_lucy_1',
+      title: 'English with Lucy — الإنجليزية  British الحقيقية',
+      teacher: 'Lucy (English with Lucy)',
+      teacherTitle: '14.1M مشترك — أفضل معلمة بريطانية',
+      duration: '15+ ساعة',
+      lessons: 30,
+      level: 'متوسط',
+      rating: 4.9,
+      students: 14100000,
+      image: '🇬🇧',
+      color: '#ec4899',
+      youtube: 'https://www.youtube.com/@EnglishwithLucy',
+      curriculum: [
+        { id: 1, title: 'العبارات اليومية الأساسية', duration: '20 دقيقة', type: 'فيديو', description: 'عبارات تستخدمها كل يوم في الحياة', videoId: 'W6rtPM4jO3E' },
+        { id: 2, title: 'كيف تستخدم To Take', duration: '15 دقيقة', type: 'فيديو', description: 'شرح شامل لاستخدامات الفعل', videoId: '338muHaMK9Q' },
+        { id: 3, title: 'أتقن هذه الكلمة وستتحدث بطلاقة', duration: '20 دقيقة', type: 'فيديو', description: 'تقنية ذكية لتحسين المحادثة', videoId: 'ikHXEIxBUrY' },
+        { id: 4, title: 'روتين دراسي يومي', duration: '15 دقيقة', type: 'نصائح', description: 'كيف تنظم وقتك للتعلم يومياً', videoId: 'Wo-C-jgA4Y8' },
+        { id: 5, title: 'كل المفردات المتقدمة في 90 دقيقة', duration: '90 دقيقة', type: 'فيديو', description: 'مفردات متقدمة مع اختبار', videoId: 'kotoNOAvNGk' }
+      ]
+    },
+    {
+      id: 'eng_bbc_1',
+      title: 'BBC Learning English — الإنجليزية من البي بي سي',
+      teacher: 'BBC Learning English',
+      teacherTitle: '10.8M مشترك — مصدر موثوق عالمياً',
+      duration: '10+ ساعة',
+      lessons: 25,
+      level: 'مبتدئ',
+      rating: 4.8,
+      students: 10800000,
+      image: '🇬🇧',
+      color: '#06b6d4',
+      youtube: 'https://www.youtube.com/@bbclearningenglish',
+      curriculum: [
+        { id: 1, title: '6 Minute English — مفردات اللغة', duration: '60 دقيقة', type: 'فيديو', description: 'ساعة كاملة من المفردات المفيدة', videoId: 'fcN0BXzK8bg' },
+        { id: 2, title: 'English Language Mega-class', duration: '30 دقيقة', type: 'فيديو', description: '30 دقيقة مفردات مركزة', videoId: 'nOOm36nz_jY' },
+        { id: 3, title: 'تعبيرات الغضب والانفعال', duration: '15 دقيقة', type: 'فيديو', description: 'كيف تعبر عن مشاعرك بالإنجليزية', videoId: '2vwRxpcypVI' },
+        { id: 4, title: 'كيف تتحدث عن روتينك اليومي', duration: '10 دقيقة', type: 'فيديو', description: 'محادثة يومية بسيطة وواضحة', videoId: 'bq6GBbh3uhU' },
+        { id: 5, title: 'كيف تتحدث عن الدماغ', duration: '10 دقيقة', type: 'فيديو', description: 'محادثة سهلة وممتعة', videoId: 'j64n3KdIob0' }
+      ]
+    },
+    {
       id: 'eng_1',
       title: 'الإنجليزية من الصفر — كورس إبراهيم عادل',
       teacher: 'إبراهيم عادل',
@@ -102,6 +169,26 @@ const COURSES = {
   ],
   french: [
     {
+      id: 'fra_alexa_1',
+      title: 'Learn French with Alexa — الفرنسية مع ألكسا',
+      teacher: 'Alexa Polidoro',
+      teacherTitle: '2.5M مشترك — أفضل معلمة فرنسية على يوتيوب',
+      duration: '15+ ساعة',
+      lessons: 30,
+      level: 'مبتدئ',
+      rating: 4.9,
+      students: 2500000,
+      image: '🇫🇷',
+      color: '#8b5cf6',
+      youtube: 'https://www.youtube.com/@learnfrenchwithalexa',
+      curriculum: [
+        { id: 1, title: 'مراجعة الأزمنة الفرنسية', duration: '30 دقيقة', type: 'فيديو', description: 'شرح كامل للأزمنة الفرنسية', videoId: 'eFZNy3tX0xA' },
+        { id: 2, title: 'تحدث معي بالفرنسية — ساعة كاملة', duration: '60 دقيقة', type: 'عملي', description: 'محادثة فرنسية حقيقية لمدة ساعة', videoId: 'QcpLSHVsNCU' },
+        { id: 3, title: 'French Lessons 1-20', duration: '20 درس', type: 'فيديو', description: '20 درس مرتب من الصفر', videoId: 'PLV1-QgpUU7N3ZGbRMIrV24FCuvZoMt4xw' },
+        { id: 4, title: 'Everyday French vs Traditional French', duration: '20 دقيقة', type: 'فيديو', description: 'الفرق بين الفرنسية اليومية والتقليدية', videoId: '-jsAn27LcI8' }
+      ]
+    },
+    {
       id: 'fra_1',
       title: 'الفرنسية من الصفر — Complete French',
       teacher: 'ماري دوبون',
@@ -138,6 +225,27 @@ const COURSES = {
     }
   ],
   spanish: [
+    {
+      id: 'spa_juan_1',
+      title: 'Español con Juan — الإسبانية مع خوان',
+      teacher: 'Juan (Español con Juan)',
+      teacherTitle: 'معلم إسباني أصلي — محبوب عالمياً',
+      duration: '15+ ساعة',
+      lessons: 30,
+      level: 'مبتدئ',
+      rating: 4.8,
+      students: 500000,
+      image: '🇪🇸',
+      color: '#f59e0b',
+      youtube: 'https://www.youtube.com/@espanolconjuan',
+      curriculum: [
+        { id: 1, title: 'التحيات الأساسية', duration: '15 دقيقة', type: 'فيديو', description: 'Hola, Buenos días, Adiós' },
+        { id: 2, title: 'أدوات التعريف', duration: '25 دقيقة', type: 'فيديو', description: 'El, La, Los, Las' },
+        { id: 3, title: 'الفعل Ser و Estar', duration: '30 دقيقة', type: 'فيديو', description: 'الفرق بينهما' },
+        { id: 4, title: 'المضارع البسيط', duration: '30 دقيقة', type: 'فيديو', description: 'El presente de indicativo' },
+        { id: 5, title: 'المحادثة اليومية', duration: '25 دقيقة', type: 'عملي', description: 'محادثات واقعية' }
+      ]
+    },
     {
       id: 'spa_1',
       title: 'الإسبانية الشاملة — Aprende Español',
@@ -177,6 +285,28 @@ const COURSES = {
   german: [
     {
       id: 'ger_1',
+      title: 'Deutsch lernen — الألمانية مع معلم أصلي',
+      teacher: 'Deutsch lernen',
+      teacherTitle: 'قناة ألمانية موثوقة',
+      duration: '15+ ساعة',
+      lessons: 25,
+      level: 'مبتدئ',
+      rating: 4.7,
+      students: 400000,
+      image: '🇩🇪',
+      color: '#ef4444',
+      youtube: 'https://www.youtube.com/@DeutschLernen',
+      curriculum: [
+        { id: 1, title: 'الحروف والنطق', duration: '20 دقيقة', type: 'فيديو', description: 'نظام النطق الألماني' },
+        { id: 2, title: 'التحيات', duration: '15 دقيقة', type: 'فيديو', description: 'Hallo, Guten Tag, Tschüss' },
+        { id: 3, title: 'أدوات التعريف', duration: '25 دقيقة', type: 'فيديو', description: 'Der, Die, Das' },
+        { id: 4, title: 'الفعل sein و haben', duration: '25 دقيقة', type: 'فيديو', description: 'أهم فعلين' },
+        { id: 5, title: 'المضارع البسيط', duration: '30 دقيقة', type: 'فيديو', description: 'Präsens' },
+        { id: 6, title: 'المحادثة اليومية', duration: '25 دقيقة', type: 'عملي', description: 'محادثات واقعية' }
+      ]
+    },
+    {
+      id: 'ger_2',
       title: 'الألمانية للمبتدئين — Deutsch Lernen',
       teacher: 'هانس مولر',
       teacherTitle: 'معلم ألماني أصلي',
@@ -210,6 +340,27 @@ const COURSES = {
     }
   ],
   japanese: [
+    {
+      id: 'jap_miku_1',
+      title: 'Learn Japanese with Miku — اليابانية الحقيقية',
+      teacher: 'Miku (Learn Japanese with Miku)',
+      teacherTitle: 'معلمة يابانية أصلي — طريقة ممتعة',
+      duration: '15+ ساعة',
+      lessons: 30,
+      level: 'مبتدئ',
+      rating: 4.8,
+      students: 300000,
+      image: '🇯🇵',
+      color: '#ec4899',
+      youtube: 'https://www.youtube.com/@LearnJapanesewithMiku',
+      curriculum: [
+        { id: 1, title: 'هيراغانا كاملة', duration: '30 درس', type: 'فيديو', description: 'تعلم كل حروف الهيراغانا' },
+        { id: 2, title: 'كاتاكانا كاملة', duration: '30 درس', type: 'فيديو', description: 'تعلم كل حروف الكاتاكانا' },
+        { id: 3, title: 'التحيات الأساسية', duration: '20 دقيقة', type: 'فيديو', description: 'こんにちは وさようなら' },
+        { id: 4, title: 'الأرقام والعد', duration: '20 دقيقة', type: 'فيديو', description: '一、二、三... والعد' },
+        { id: 5, title: 'المحادثة اليومية', duration: '25 دقيقة', type: 'عملي', description: 'محادثات واقعية' }
+      ]
+    },
     {
       id: 'jap_1',
       title: 'اليابانية من الصفر — 日本語入門',
@@ -249,6 +400,27 @@ const COURSES = {
     }
   ],
   chinese: [
+    {
+      id: 'chn_yoyo_1',
+      title: 'Learn Chinese with Yoyo — الصينية الحقيقية',
+      teacher: 'Yoyo Chinese',
+      teacherTitle: 'منصة صينية موثوقة — طريقة ممتعة',
+      duration: '15+ ساعة',
+      lessons: 30,
+      level: 'مبتدئ',
+      rating: 4.8,
+      students: 500000,
+      image: '🇨🇳',
+      color: '#f59e0b',
+      youtube: 'https://www.youtube.com/@YoyoChinese',
+      curriculum: [
+        { id: 1, title: 'بينيين — نظام النطق', duration: '25 دقيقة', type: 'فيديو', description: 'تعلم النطق الصيني الصحيح' },
+        { id: 2, title: 'الأصوات الأربعة', duration: '30 دقيقة', type: 'فيديو', description: 'المستويات الصوتية الأربعة' },
+        { id: 3, title: 'التحيات الأساسية', duration: '20 دقيقة', type: 'فيديو', description: '你好،谢谢，再见' },
+        { id: 4, title: 'الأرقام والعد', duration: '20 دقيقة', type: 'فيديو', description: '一、二、三... والعد' },
+        { id: 5, title: 'المحادثة اليومية', duration: '25 دقيقة', type: 'عملي', description: 'محادثات واقعية' }
+      ]
+    },
     {
       id: 'chn_1',
       title: 'الصينية المبسطة — 汉语入门',
