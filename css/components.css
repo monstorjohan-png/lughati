@@ -1,0 +1,820 @@
+/* ========================================
+   المكونات — Components
+   ألوان فخمة: كحلي + ذهبي
+   ======================================== */
+
+/* === شريط التنقل === */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 18, 41, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 rgba(184, 134, 11, 0.3), var(--shadow-lg);
+  z-index: 1000;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid rgba(184, 134, 11, 0.2);
+}
+
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-primary-light);
+  text-decoration: none;
+  text-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: var(--space-6);
+}
+
+.nav-links a {
+  color: rgba(253, 251, 247, 0.75);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--transition-base);
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-gold);
+  transition: width var(--transition-base);
+}
+
+.nav-links a:hover {
+  color: var(--color-primary-light);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* === الأزرار === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  letter-spacing: 0.3px;
+}
+
+.btn-primary {
+  background: var(--gradient-gold);
+  color: var(--bg-dark);
+  box-shadow: var(--shadow-gold);
+}
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(184, 134, 11, 0.45);
+}
+.btn-primary:active {
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid rgba(218, 165, 32, 0.6);
+  color: var(--color-primary-light);
+}
+.btn-outline:hover {
+  background: rgba(184, 134, 11, 0.15);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: rgba(253, 251, 247, 0.1);
+  color: var(--text-inverse);
+  border: 1px solid rgba(253, 251, 247, 0.2);
+}
+.btn-secondary:hover {
+  background: rgba(253, 251, 247, 0.2);
+}
+
+/* === القسم الرئيسي === */
+.hero {
+  padding: calc(var(--space-8) + 70px) 0 var(--space-8);
+  text-align: center;
+  background: var(--gradient-hero);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(184, 134, 11, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(26, 42, 94, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero h1 {
+  font-size: var(--font-size-4xl);
+  font-weight: 800;
+  margin-bottom: var(--space-4);
+  color: var(--text-inverse);
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 span {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: var(--font-size-xl);
+  color: rgba(253, 251, 247, 0.7);
+  margin-bottom: var(--space-6);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* === بطاقات اللغات === */
+.languages {
+  padding: var(--space-8) 0;
+}
+
+.languages h2 {
+  text-align: center;
+  font-size: var(--font-size-3xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.language-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.language-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: 1px solid rgba(184, 134, 11, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.language-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-gold);
+  transform: scaleX(0);
+  transition: transform var(--transition-base);
+}
+
+.language-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl), var(--shadow-gold);
+  border-color: rgba(184, 134, 11, 0.4);
+}
+
+.language-card:hover::before {
+  transform: scaleX(1);
+}
+
+.language-card .flag {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: var(--space-3);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+/* شارات الأعلام بدلاً من الإيموجي */
+.flag-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: white;
+  margin-bottom: var(--space-3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.flag-badge::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: var(--radius-full);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.flag-gb { background: linear-gradient(135deg, #012169 0%, #c8102e 100%); }
+.flag-fr { background: linear-gradient(135deg, #002395 0%, #ed2939 100%); }
+.flag-es { background: linear-gradient(135deg, #aa151b 0%, #f1bf00 100%); }
+.flag-de { background: linear-gradient(135deg, #000000 0%, #dd0000 100%); }
+.flag-jp { background: linear-gradient(135deg, #bc002d 0%, #ffffff 100%); color: #bc002d; }
+.flag-cn { background: linear-gradient(135deg, #de2910 0%, #ffde00 100%); }
+
+.language-card h3 {
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+  font-weight: 700;
+}
+
+.language-card p {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* === الاختبار === */
+.assessment {
+  padding: var(--space-8) 0;
+}
+
+.assessment h2 {
+  text-align: center;
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-5);
+}
+
+.quiz-container {
+  max-width: 650px;
+  margin: 0 auto;
+  background: var(--gradient-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-7);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(184, 134, 11, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-gold);
+}
+
+.quiz-progress {
+  height: 6px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-6);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--gradient-gold);
+  border-radius: var(--radius-full);
+  transition: width 0.5s var(--ease-spring);
+  width: 0%;
+}
+
+.quiz-question {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-5);
+  text-align: center;
+  color: var(--text-primary);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-options {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.quiz-option {
+  padding: var(--space-3) var(--space-5);
+  border: 2px solid rgba(184, 134, 11, 0.12);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: start;
+  background: var(--bg-primary);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+}
+
+.quiz-option:hover {
+  border-color: var(--color-primary);
+  background: var(--gradient-gold-subtle);
+  transform: translateX(-4px);
+}
+
+.quiz-option.correct {
+  border-color: var(--color-success);
+  background: rgba(46, 125, 84, 0.1);
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.quiz-option.wrong {
+  border-color: var(--color-error);
+  background: rgba(179, 57, 57, 0.08);
+  color: var(--color-error);
+}
+
+.quiz-result {
+  text-align: center;
+  padding: var(--space-5);
+}
+
+.quiz-result h3 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-3);
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.quiz-result p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+/* === لوحة التعلم === */
+.dashboard {
+  padding: var(--space-8) 0;
+}
+
+.dashboard h2 {
+  text-align: center;
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-5);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-5);
+}
+
+.card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(184, 134, 11, 0.1);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.card h3 {
+  color: var(--text-primary);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid rgba(184, 134, 11, 0.2);
+}
+
+.level-display {
+  font-size: var(--font-size-4xl);
+  font-weight: 800;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: var(--space-3) 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.stat {
+  padding: var(--space-3);
+  background: var(--gradient-gold-subtle);
+  border-radius: var(--radius-md);
+}
+
+.stat .counter {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-primary);
+  display: block;
+}
+
+.stat p {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* === الدروس === */
+.lessons {
+  padding: var(--space-8) 0;
+}
+
+.lessons h2 {
+  text-align: center;
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-5);
+}
+
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-5);
+}
+
+.lesson-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+  border: 1px solid rgba(184, 134, 11, 0.1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-card::after {
+  content: '→';
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  opacity: 0;
+  transition: all var(--transition-base);
+}
+
+.lesson-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl), var(--shadow-gold);
+  border-color: rgba(184, 134, 11, 0.35);
+  padding-right: var(--space-7);
+}
+
+.lesson-card:hover::after {
+  opacity: 1;
+}
+
+.lesson-card h3 {
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  font-weight: 700;
+}
+
+.lesson-card p {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-4);
+}
+
+.lesson-card .lesson-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(184, 134, 11, 0.1);
+}
+
+/* === المساعد الذكي === */
+.assistant-widget {
+  position: fixed;
+  bottom: var(--space-5);
+  left: var(--space-5);
+  z-index: 2000;
+}
+
+.assistant-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--gradient-gold);
+  color: var(--bg-dark);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+  box-shadow: var(--shadow-gold);
+  transition: all var(--transition-base);
+  font-weight: 700;
+  font-family: var(--font-family);
+}
+
+.assistant-toggle:hover {
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 8px 30px rgba(184, 134, 11, 0.5);
+}
+
+.assistant-icon {
+  font-size: var(--font-size-xl);
+}
+
+.assistant-badge {
+  font-weight: 700;
+}
+
+.assistant-panel {
+  position: absolute;
+  bottom: calc(100% + var(--space-3));
+  left: 0;
+  width: 400px;
+  max-height: 550px;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(184, 134, 11, 0.2);
+}
+
+.assistant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  background: var(--gradient-navy);
+  color: var(--text-inverse);
+}
+
+.assistant-header h3 {
+  font-size: var(--font-size-lg);
+}
+
+.assistant-header button {
+  background: rgba(253, 251, 247, 0.1);
+  border: none;
+  color: var(--text-inverse);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+}
+
+.assistant-header button:hover {
+  background: rgba(253, 251, 247, 0.2);
+}
+
+.assistant-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--bg-secondary);
+}
+
+.message {
+  max-width: 85%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: var(--gradient-navy);
+  color: var(--text-inverse);
+  border-bottom-right-radius: var(--space-1);
+}
+
+.message.assistant {
+  align-self: flex-start;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid rgba(184, 134, 11, 0.15);
+  border-bottom-left-radius: var(--space-1);
+}
+
+.assistant-input {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-top: 1px solid rgba(184, 134, 11, 0.15);
+  background: var(--bg-card);
+}
+
+.assistant-input input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid rgba(184, 134, 11, 0.15);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.assistant-input input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.assistant-input button {
+  padding: var(--space-3) var(--space-5);
+  background: var(--gradient-gold);
+  color: var(--bg-dark);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 700;
+  font-family: var(--font-family);
+  transition: all var(--transition-base);
+}
+
+.assistant-input button:hover {
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-1px);
+}
+
+/* === نافذة الدرس === */
+.lesson-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 41, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  animation: fadeIn 0.3s ease;
+}
+
+.lesson-content {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-7);
+  max-width: 650px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid rgba(184, 134, 11, 0.2);
+  box-shadow: var(--shadow-xl);
+  animation: scaleIn 0.3s var(--ease-spring);
+}
+
+.close-btn {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.close-btn:hover {
+  background: var(--color-error);
+  color: white;
+}
+
+.lesson-content h2 {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--space-3);
+}
+
+.lesson-body h3,
+.lesson-body h4 {
+  color: var(--text-primary);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.vocabulary ul {
+  list-style: none;
+}
+
+.vocabulary li {
+  padding: var(--space-2) var(--space-3);
+  background: var(--gradient-gold-subtle);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-2);
+  border-right: 3px solid var(--color-primary);
+}
+
+.vocabulary li strong {
+  color: var(--color-primary-dark);
+}
+
+.lesson-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* === خانة القائمة في الخطة === */
+#dailyPlan {
+  list-style: none;
+}
+
+#dailyPlan li {
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
+  background: var(--gradient-gold-subtle);
+  border-radius: var(--radius-sm);
+  border-right: 3px solid var(--color-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+/* === التذييل === */
+.footer {
+  background: var(--bg-dark);
+  color: rgba(253, 251, 247, 0.6);
+  text-align: center;
+  padding: var(--space-6) 0;
+  border-top: 3px solid var(--color-primary);
+}
+
+.footer p {
+  font-size: var(--font-size-sm);
+}
