@@ -140,8 +140,8 @@ function showAllSections() {
     if (el) el.classList.remove('hidden');
   });
   
-  // عرض الفيديوهات والموارد
-  try { renderVideos(); } catch(e) {}
+  // عرض الفيديوهات والموارد والسلاسل
+  try { initVideoSections(); } catch(e) {}
   try { renderResources(); } catch(e) {}
 }
 

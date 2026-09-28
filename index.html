@@ -131,12 +131,36 @@
     </div>
   </section>
 
-  <!-- الفيديوهات الحقيقية -->
+  <!-- الفيديوهات والقنوات والسلاسل -->
   <section id="videos" class="videos-section hidden">
     <div class="container">
       <p class="section-tag reveal">شاهد وتعلّم من أفضل المعلمين</p>
-      <h2 class="reveal">الفيديوهات التعليمية</h2>
-      <div class="videos-grid" id="videosGrid"></div>
+      <h2 class="reveal">الفيديوهات والقنوات والسلاسل</h2>
+
+      <!-- القنوات العربية -->
+      <div class="video-section">
+        <h3 class="section-subtitle">القنوات العربية</h3>
+        <div class="channels-grid" id="arabicChannelsGrid"></div>
+      </div>
+
+      <!-- القنوات الأجنبية -->
+      <div class="video-section">
+        <h3 class="section-subtitle">القنوات الأجنبية</h3>
+        <div class="channels-grid" id="foreignChannelsGrid"></div>
+      </div>
+
+      <!-- السلاسل المنظمة -->
+      <div class="video-section">
+        <h3 class="section-subtitle">السلاسل المنظمة مع التتبع</h3>
+        <div class="series-grid" id="seriesGrid"></div>
+      </div>
+
+      <!-- الفيديوهات المحفوظة -->
+      <div class="video-section">
+        <h3 class="section-subtitle">الفيديوهات المحفوظة للمشاهدة بدون إنترنت</h3>
+        <div class="videos-grid" id="savedVideosGrid"></div>
+      </div>
+
       <div class="videos-actions">
         <button class="btn btn-primary" onclick="showDownloadPanel()">⬇ تحميل كل المحتوى</button>
         <button class="btn btn-outline" onclick="OfflineManager.registerSW()">تفعيل وضع عدم الاتصال</button>
