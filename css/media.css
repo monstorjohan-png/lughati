@@ -203,6 +203,7 @@
   border: 1px solid rgba(184, 134, 11, 0.1);
   border-radius: var(--radius-md);
   padding: var(--space-4);
+  color: var(--text-primary);
   text-decoration: none;
   transition: all var(--transition-base);
   cursor: pointer;
@@ -234,12 +235,12 @@
   white-space: nowrap;
 }
 
-.type-free { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-.type-certified { background: rgba(184, 134, 11, 0.15); color: var(--color-primary); }
-.type-paid { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-.type-global { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
-.type-arabic { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-.type-youtube { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.type-free { background: var(--badge-green-tint); color: var(--badge-green); }
+.type-certified { background: var(--badge-gold-tint); color: var(--badge-gold); }
+.type-paid { background: var(--badge-amber-tint); color: var(--badge-amber); }
+.type-global { background: var(--badge-blue-tint); color: var(--badge-blue); }
+.type-arabic { background: var(--badge-green-tint); color: var(--badge-green); }
+.type-youtube { background: var(--badge-red-tint); color: var(--badge-red); }
 
 .resource-card p {
   font-size: var(--font-size-xs);
@@ -464,6 +465,7 @@
   border: 1px solid rgba(239, 68, 68, 0.15);
   border-radius: var(--radius-md);
   padding: var(--space-4);
+  color: var(--text-primary);
   text-decoration: none;
   transition: all var(--transition-base);
 }

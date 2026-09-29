@@ -28,6 +28,18 @@
   --text-inverse: #fdfbf7;
   --text-gold: #b8860b;
 
+  /* ألوان الشارات — معايَرة لضمان تباين واضح على الخلفية الفاتحة */
+  --badge-blue: #1d4ed8;
+  --badge-blue-tint: rgba(29, 78, 216, 0.10);
+  --badge-green: #0f766e;
+  --badge-green-tint: rgba(15, 118, 110, 0.10);
+  --badge-red: #b91c1c;
+  --badge-red-tint: rgba(185, 28, 28, 0.10);
+  --badge-amber: #92400e;
+  --badge-amber-tint: rgba(146, 64, 14, 0.10);
+  --badge-gold: #8b6508;
+  --badge-gold-tint: rgba(139, 101, 8, 0.12);
+
   /* الخطوط */
   --font-family: 'Cairo', 'Segoe UI', sans-serif;
   --font-size-xs: 0.75rem;
@@ -77,6 +89,11 @@
   --gradient-hero: linear-gradient(160deg, #0a1229 0%, #1a2a5e 40%, #0f1b3d 100%);
   --gradient-card: linear-gradient(145deg, #ffffff 0%, #fdfbf7 100%);
   --gradient-gold-subtle: linear-gradient(135deg, rgba(184, 134, 11, 0.08) 0%, rgba(218, 165, 32, 0.04) 100%);
+}
+
+/* الروابط ترث لون النص — يمنع الأزرق الافتراضي على الخلفية الداكنة */
+a {
+  color: inherit;
 }
 
 /* إعادة تعيين */

@@ -48,6 +48,40 @@ function saveProgress() {
   localStorage.setItem('userProgress', JSON.stringify(progress));
 }
 
+// الخطة اليومية في لوحة التحكم
+function generateDailyPlan(level) {
+  const plans = {
+    'مبتدئ': [
+      'تعلم 5 كلمات جديدة اليوم',
+      'استمع لمحادثة بسيطة لمدة 10 دقائق',
+      'كرر التحيات الأساسية 5 مرات',
+      'اكتب 3 جمل بسيطة عن نفسك'
+    ],
+    'متوسط': [
+      'تعلم 10 كلمات جديدة',
+      'اقرأ نصاً قصيراً وحاول فهم الفكرة العامة',
+      'استمع لبودكاست لمدة 15 دقيقة',
+      'تحدث مع نفسك لمدة 5 دقائق'
+    ],
+    'متقدم': [
+      'تعلم 15 كلمة جديدة',
+      'شاهد فيديو بدون ترجمة',
+      'اكتب فقرة قصيرة عن يومك',
+      'راجع قاعدة نحوية متقدمة'
+    ],
+    'خبير': [
+      'اقرأ مقالاً طويلاً',
+      'شارك في محادثة مع متحدث أصلي',
+      'اكتب مقالاً قصيراً',
+      'علم شخصاً آخر ما تعلمته'
+    ]
+  };
+
+  const plan = plans[level] || plans['مبتدئ'];
+  const planEl = document.getElementById('dailyPlan');
+  if (planEl) planEl.innerHTML = plan.map(item => `<li>${item}</li>`).join('');
+}
+
 // تحميل التقدم عند بدء التطبيق
 document.addEventListener('DOMContentLoaded', () => {
   updateStreak();

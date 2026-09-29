@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="css/features.css">
   <link rel="stylesheet" href="css/advanced.css">
   <link rel="stylesheet" href="css/media.css">
+  <link rel="stylesheet" href="css/lesson-engine.css">
 </head>
 <body>
   <!-- شريط التقدم العلوي -->
@@ -37,77 +38,40 @@
         <li><a href="#courses">الكورسات</a></li>
         <li><a href="#videos">الفيديوهات</a></li>
         <li><a href="#path">المسار</a></li>
-        <li><a href="#practice">التدريب</a></li>
-        <li><a href="#resources">روابط</a></li>
-        <li><a href="#progress">تقدمي</a></li>
+        <li><a href="#dashboard">لوحة التحكم</a></li>
+        <li><a href="#lessons">الدروس</a></li>
+        <li><a href="#chat">المحادثة</a></li>
+        <li><a href="#practice">التطبيق</a></li>
+        <li><a href="#resources">المصادر</a></li>
+        <li><a href="#progress">التقدم</a></li>
       </ul>
-      <div class="nav-actions">
-        <div id="authArea"></div>
-        <button class="btn btn-outline btn-sm pwa-install-btn" title="تثبيت لغتي كتطبيق على جهازك">تثبيت التطبيق</button>
-        <button class="theme-toggle" onclick="toggleTheme()" title="تبديل الوضع" id="themeToggle">
-          <span class="theme-icon">☀</span>
-        </button>
-        <button class="btn btn-primary" onclick="startDynamicQuiz('full')">ابدأ الآن</button>
-      </div>
     </div>
   </nav>
 
-  <!-- القسم الرئيسي -->
-  <header id="home" class="hero">
+  <!-- الصفحة الرئيسية -->
+  <section id="home" class="home">
     <div class="container">
-      <p class="hero-tag reveal">منصة التعلم الذكية</p>
-      <h1 class="reveal">تعلم أي لغة في <span>العالم</span></h1>
-      <p class="reveal">طريقة ذكية وتفاعلية ومخصصة لك</p>
-      <div class="hero-buttons">
-        <button class="btn btn-primary press-effect" onclick="startDynamicQuiz('full')">ابدأ اختبار المستوى</button>
-        <button class="btn btn-outline press-effect" onclick="openConversation()">تحدث الآن</button>
-        <button class="btn btn-secondary press-effect" onclick="openAssistant()">اسأل المساعد</button>
+      <div class="home-content">
+        <h1 class="reveal">لغتي — تعلم اللغات بذكاء</h1>
+        <p class="reveal">منصة تعلم اللغات الذكية التي تجمع بين التعليم التفاعلي والمحتوى الغني لمساعدتك على إتقان لغات جديدة بطريقة ممتعة وفعالة.</p>
+        <div class="home-actions">
+          <button class="btn btn-primary" onclick="showAllSections()">ابدأ التعلم</button>
+          <button class="btn btn-outline" onclick="startDynamicQuiz('full')">اختبار المستوى</button>
+        </div>
       </div>
-      <div class="hero-stats reveal">
-        <div class="hero-stat"><strong>6</strong><span>لغات</span></div>
-        <div class="hero-stat"><strong>10+</strong><span>كورس</span></div>
-        <div class="hero-stat"><strong>100+</strong><span>كلمة</span></div>
-        <div class="hero-stat"><strong>28</strong><span>يوم مسار</span></div>
+      <div class="home-image">
+        <!-- صورة توضيحية -->
       </div>
     </div>
-  </header>
+  </section>
 
-  <!-- اختيار اللغة -->
-  <section id="learn" class="languages">
+  <!-- قسم التعلم -->
+  <section id="learn" class="learn hidden">
     <div class="container">
-      <p class="section-tag reveal">ابدأ رحلتك</p>
+      <p class="section-tag reveal">اختر لغتك وابدأ رحلتك</p>
       <h2 class="reveal">اختر لغتك</h2>
-      <div class="language-grid">
-        <div class="language-card reveal" onclick="selectLanguage('english')">
-          <span class="flag-badge flag-gb">EN</span>
-          <h3>الإنجليزية</h3>
-          <p>الأكثر طلباً في العالم</p>
-        </div>
-        <div class="language-card reveal" onclick="selectLanguage('french')">
-          <span class="flag-badge flag-fr">FR</span>
-          <h3>الفرنسية</h3>
-          <p>لغة الثقافة والفنون</p>
-        </div>
-        <div class="language-card reveal" onclick="selectLanguage('spanish')">
-          <span class="flag-badge flag-es">ES</span>
-          <h3>الإسبانية</h3>
-          <p>ثاني أكثر لغة تحدثاً</p>
-        </div>
-        <div class="language-card reveal" onclick="selectLanguage('german')">
-          <span class="flag-badge flag-de">DE</span>
-          <h3>الألمانية</h3>
-          <p>لغة العلوم والتقنية</p>
-        </div>
-        <div class="language-card reveal" onclick="selectLanguage('japanese')">
-          <span class="flag-badge flag-jp">JP</span>
-          <h3>اليابانية</h3>
-          <p>لغة التكنولوجيا والابتكار</p>
-        </div>
-        <div class="language-card reveal" onclick="selectLanguage('chinese')">
-          <span class="flag-badge flag-cn">CN</span>
-          <h3>الصينية</h3>
-          <p>لغة المستقبل والتجارة</p>
-        </div>
+      <div class="language-grid" id="languageGrid">
+        <!-- يتم تعبئته dynamically بواسطة selectLanguage -->
       </div>
     </div>
   </section>
@@ -142,272 +106,145 @@
   </section>
 
   <!-- الفيديوهات والقنوات والسلاسل -->
-  <section id="videos" class="videos-section hidden">
+  <section id="videos" class="videos hidden">
     <div class="container">
-      <p class="section-tag reveal">شاهد وتعلّم من أفضل المعلمين</p>
-      <h2 class="reveal">الفيديوهات والقنوات والسلاسل</h2>
-
-      <!-- القنوات العربية -->
-      <div class="video-section">
-        <h3 class="section-subtitle">القنوات العربية</h3>
-        <div class="channels-grid" id="arabicChannelsGrid"></div>
+      <p class="section-tag reveal">شاهد وتعلم</p>
+      <h2 class="reveal">الفيديوهات والقنوات</h2>
+      <div class="tab-container">
+        <button class="tab-btn active" onclick="showTab('foreignChannels')">القنوات الأجنبية</button>
+        <button class="tab-btn" onclick="showTab('arabicChannels')">القنوات العربية</button>
+        <button class="tab-btn" onclick="showTab('series')">السلاسل التعليمية</button>
       </div>
-
-      <!-- القنوات الأجنبية -->
-      <div class="video-section">
-        <h3 class="section-subtitle">القنوات الأجنبية</h3>
-        <div class="channels-grid" id="foreignChannelsGrid"></div>
-      </div>
-
-      <!-- السلاسل المنظمة -->
-      <div class="video-section">
-        <h3 class="section-subtitle">السلاسل المنظمة مع التتبع</h3>
-        <div class="series-grid" id="seriesGrid"></div>
-      </div>
-
-      <!-- تنزيلات الفيديو -->
-      <div class="video-section">
-        <h3 class="section-subtitle">التنزيلات — حمّل وشاهد بدون إنترنت</h3>
-        <div class="downloads-toolbar">
-          <div class="dl-url-box">
-            <input type="url" id="dlUrlInput" placeholder="الصق رابط فيديو أو صورة أو رابط يوتيوب هنا" aria-label="رابط التنزيل">
-            <button class="btn btn-primary btn-sm" onclick="VideoDownloader.downloadFromInput()">تنزيل</button>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="const i=document.getElementById('videoFileInput'); i.value=''; VideoDownloader._fallbackMeta=null; i.click();">إضافة ملف من جهازك</button>
-          <button class="btn btn-outline btn-sm" onclick="VideoDownloader.clearAll()">حذف الكل</button>
-          <span class="downloads-usage" id="downloadsUsage"></span>
-        </div>
-        <p class="dl-hint">يدعم روابط يوتيوب، وروابط فيديو مباشرة (mp4 / webm)، وروابط صور (jpg / png / webp) — والمصادر التي يمنعها يوتيوب تظهر بخطة بديلة من خطوتين.</p>
-        <input type="file" id="videoFileInput" accept="video/*,image/*" multiple hidden>
-        <div class="videos-grid downloads-grid" id="downloadsGrid"></div>
-      </div>
-
-      <!-- الفيديوهات المحفوظة -->
-      <div class="video-section">
-        <h3 class="section-subtitle">الفيديوهات المحفوظة (روابط) — نزّلها دفعة واحدة</h3>
-        <div class="downloads-toolbar">
-          <button class="btn btn-primary btn-sm" onclick="VideoDownloader.downloadSavedAll()">تنزيل كل المحفوظات</button>
-        </div>
-        <div class="videos-grid" id="savedVideosGrid"></div>
-      </div>
-
-      <div class="videos-actions">
-        <button class="btn btn-primary" onclick="showDownloadPanel()">⬇ تحميل كل المحتوى</button>
-        <button class="btn btn-outline" onclick="OfflineManager.registerSW()">تفعيل وضع عدم الاتصال</button>
-        <button class="btn btn-outline pwa-install-btn">تطبيق الهاتف</button>
+      <div class="tab-content">
+        <div id="foreignChannelsGrid" class="channels-grid"></div>
+        <div id="arabicChannelsGrid" class="channels-grid"></div>
+        <div id="seriesGrid" class="series-grid"></div>
       </div>
     </div>
   </section>
 
   <!-- المسار التعليمي -->
-  <section id="path" class="learning-path hidden">
+  <section id="path" class="path hidden">
     <div class="container">
-      <p class="section-tag reveal">28 يوم لتحويل حياتك</p>
-      <h2 class="reveal">المسار التعليمي</h2>
-      <div id="pathContainer"></div>
+      <p class="section-tag reveal">مسارك التعليمي الشخصي</p>
+      <h2 class="reveal">مسارك التعليمي</p>
+      <div class="path-grid" id="pathGrid"></div>
     </div>
   </section>
 
-  <!-- لوحة التعلم -->
+  <!-- لوحة التحكم -->
   <section id="dashboard" class="dashboard hidden">
     <div class="container">
-      <p class="section-tag reveal">ملخص تقدمك</p>
-      <h2 class="reveal">لوحة التعلم</h2>
+      <p class="section-tag reveal">متابعة進كم</p>
+      <h2 class="reveal">لوحة التحكم</h2>
       <div class="dashboard-grid">
-        <div class="card reveal">
-          <h3>مستواك الحالي</h3>
-          <div class="level-display" id="currentLevel">مبتدئ</div>
-          <p>اللغة: <span id="selectedLang">الإنجليزية</span></p>
+        <div class="dashboard-card">
+          <h3>الدروس المكتملة</h3>
+          <p><span id="lessonsCompleted">0</span> درس</p>
         </div>
-        <div class="card reveal">
-          <h3>خطتك اليومية</h3>
-          <ul id="dailyPlan"></ul>
+        <div class="dashboard-card">
+          <h3>الكلمات المتعلمة</h3>
+          <p><span id="wordsLearned">0</span> كلمة</p>
         </div>
-        <div class="card reveal">
-          <h3>إحصائياتك</h3>
-          <div class="stats">
-            <div class="stat">
-              <span class="counter" id="wordsLearned">0</span>
-              <p>كلمة</p>
-            </div>
-            <div class="stat">
-              <span class="counter" id="lessonsCompleted">0</span>
-              <p>درس</p>
-            </div>
-            <div class="stat">
-              <span class="counter" id="streak">0</span>
-              <p>يوم متتالي</p>
-            </div>
-          </div>
+        <div class="dashboard-card">
+          <h3>سلسلة التعلم</h3>
+          <p><span id="streak">0</span> يوم</p>
         </div>
+        <div class="dashboard-card">
+          <h3>المستوى الحالي</h3>
+          <p><span id="currentLevel">غير محدد</span></p>
+        </div>
+      </div>
+      <div class="dashboard-section">
+        <h3>الخطة اليومية</h3>
+        <ul id="dailyPlan"></ul>
+      </div>
+      <div class="dashboard-section">
+        <h3>آخر الأنشطة</h3>
+        <div id="activityLog"></div>
       </div>
     </div>
   </section>
 
-  <!-- الدروس -->
+  <!-- دروس اللغة -->
   <section id="lessons" class="lessons hidden">
     <div class="container">
-      <p class="section-tag reveal">تعلّم خطوة بخطوة</p>
+      <p class="section-tag reveal">دروس تفاعلية</p>
       <h2 class="reveal">الدروس</h2>
       <div class="lessons-grid" id="lessonsGrid"></div>
     </div>
   </section>
 
   <!-- المحادثة -->
-  <section id="chat" class="conversation-section hidden">
+  <section id="chat" class="chat hidden">
     <div class="container">
-      <p class="section-tag reveal">تحدث بدون إنترنت</p>
-      <h2 class="reveal">المحادثة التفاعلية</h2>
-      <div class="conversation-cta">
-        <div class="conv-cta-content">
-          <h3>تدرب على التحدث في مواقف حقيقية</h3>
-          <p>محادثة ذكية تفهمك وتوجهك — بدون إنترنت ومجانية بالكامل</p>
-          <ul class="conv-features">
-            <li>فهم تلقائي لكل المستويات</li>
-            <li>تصحيح الأخطاء النحوية فوراً</li>
-            <li>نطق صوتي حقيقي لكل الكلمات</li>
-            <li>أجوبة ذكية لمختلف المواضيع</li>
-          </ul>
-          <button class="btn btn-primary" onclick="openConversation()">ابدأ المحادثة الآن</button>
+      <p class="section-tag reveal">تحدث بثقة</p>
+      <h2 class="reveal">المحادثة مع المساعد الذكي</p>
+      <div class="chat-container">
+        <div class="chat-header">
+          <h3>المساعد الذكي</h3>
+          <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+          <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleChatKeypress(event)">
+          <button onclick="sendChatMessage()">إرسال</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- التدريب -->
+  <!-- قسم التدريب -->
   <section id="practice" class="practice hidden">
     <div class="container">
-      <p class="section-tag reveal">تدرب وتطبق</p>
-      <h2 class="reveal">تمارين تفاعلية</h2>
+      <p class="section-tag reveal">التطبيق العملي</p>
+      <h2 class="reveal">التمارين التفاعلية</p>
       <div class="practice-grid">
-        <div class="practice-card reveal" onclick="openFlashcards()">
-          <span class="practice-icon">◆</span>
-          <h3>بطاقات المفردات</h3>
-          <p>تعلم الكلمات بطريقة البطاقات المقلوبة</p>
-          <span class="practice-meta">20 كلمة</span>
-        </div>
-        <div class="practice-card reveal" onclick="openTranslation()">
-          <span class="practice-icon">⇄</span>
-          <h3>تمارين الترجمة</h3>
-          <p>ترجم الجمل من وألى اللغة</p>
-          <span class="practice-meta">8 أسئلة</span>
-        </div>
-        <div class="practice-card reveal" onclick="openListening()">
-          <span class="practice-icon">♪</span>
-          <h3>تمارين الاستماع</h3>
-          <p>استمع للجمل واختر الترجمة</p>
-          <span class="practice-meta">4 تمارين</span>
-        </div>
-        <div class="practice-card reveal" onclick="startDynamicQuiz('quick')">
-          <span class="practice-icon">⚡</span>
-          <h3>اختبار سريع</h3>
-          <p>5 أسئلة عشوائية جديدة كل مرة</p>
-          <span class="practice-meta">5 أسئلة</span>
-        </div>
-        <div class="practice-card reveal" onclick="openConversation()">
-          <span class="practice-icon">💬</span>
-          <h3>محادثة تفاعلية</h3>
-          <p>تحدث مع المساعد بدون إنترنت</p>
-          <span class="practice-meta">بدون نت</span>
-        </div>
-        <div class="practice-card reveal" onclick="openAchievements()">
-          <span class="practice-icon">★</span>
-          <h3>الشارات</h3>
-          <p>اجمع الشارات والمكافآت</p>
-          <span class="practice-meta" id="achievementsMeta">0/10</span>
-        </div>
+        <button class="practice-btn" onclick="openTranslation('english')">تمارين الترجمة</button>
+        <button class="practice-btn" onclick="openListening('english')">تمارين الاستماع</button>
       </div>
     </div>
   </section>
 
-  <!-- روابط ومواقع مفيدة -->
-  <section id="resources" class="resources-section hidden">
+  <!-- المصادر -->
+  <section id="resources" class="resources hidden">
     <div class="container">
-      <p class="section-tag reveal">موارد خارجية موثوقة</p>
-      <h2 class="reveal">روابط ومواقع مفيدة</h2>
-      <div class="resources-grid" id="resourcesGrid"></div>
+      <p class="section-tag reveal">مصادر التعلم</p>
+      <h2 class="reveal">المصادر والمراجع</p>
+      <div class="resources-grid">
+        <div class="resources-card">
+          <h3>القواميس والمترجمين</h3>
+          <p>روابط مفيدة للقواميس والمترجمين الموثوقة</p>
+        </div>
+        <div class="resources-card">
+          <h3>مواقع تعليمية</h3>
+          <p>مواقع تعليمية مجانية لتعلم اللغات</p>
+        </div>
+        <div class="resources-card">
+          <h3>قنوات يوتيوب تعليمية</h3>
+          <p>أفضل القنوات لتعلم اللغات على يوتيوب</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- التقدم -->
-  <section id="progress" class="progress-section hidden">
+  <section id="progress" class="progress hidden">
     <div class="container">
-      <p class="section-tag reveal">راقب تقدمك</p>
-      <h2 class="reveal">تقدمي</h2>
-      <div class="progress-grid">
-        <div class="card reveal">
-          <h3>مستوى الإتقان</h3>
-          <div class="progress-item">
-            <div class="progress-label">
-              <span>المفردات</span>
-              <span id="vocabPercent">0%</span>
-            </div>
-            <div class="progress-bar-full">
-              <div class="progress-fill" id="vocabBar" style="width:0%"></div>
-            </div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label">
-              <span>الدروس</span>
-              <span id="lessonsPercent">0%</span>
-            </div>
-            <div class="progress-bar-full">
-              <div class="progress-fill" id="lessonsBar" style="width:0%"></div>
-            </div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label">
-              <span>التمارين</span>
-              <span id="exercisesPercent">0%</span>
-            </div>
-            <div class="progress-bar-full">
-              <div class="progress-fill" id="exercisesBar" style="width:0%"></div>
-            </div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label">
-              <span>المسار التعليمي</span>
-              <span id="pathPercent">0%</span>
-            </div>
-            <div class="progress-bar-full">
-              <div class="progress-fill" id="pathBar" style="width:0%"></div>
-            </div>
-          </div>
-        </div>
-        <div class="card reveal">
-          <h3>سجل النشاط</h3>
-          <div class="activity-log" id="activityLog">
-            <p class="activity-empty">ابدأ التعلم لتظهر نشاطاتك هنا</p>
-          </div>
-        </div>
+      <p class="section-tag reveal">تتبع進كم</p>
+      <h2 class="reveal">تقدمك في التعلم</h2>
+      <div class="progress-tabs">
+        <button class="progress-tab active" onclick="showProgressTab('overview')">نظرة عامة</button>
+        <button class="progress-tab" onclick="showProgressTab('skills')">المهارات</button>
+        <button class="progress-tab" onclick="showProgressTab('achievements')">الإنجازات</button>
+      </div>
+      <div class="progress-content">
+        <div id="progressOverview"></div>
+        <div id="progressSkills"></div>
+        <div id="progressAchievements"></div>
       </div>
     </div>
   </section>
-
-  <!-- المساعد الذكي -->
-  <div class="assistant-widget" id="assistantWidget">
-    <button class="assistant-toggle" onclick="toggleAssistant()">
-      <span class="assistant-icon">✦</span>
-      <span class="assistant-badge">مساعدك الذكي</span>
-    </button>
-    <div class="assistant-panel hidden" id="assistantPanel">
-      <div class="assistant-header">
-        <h3>المساعد الذكي</h3>
-        <button onclick="toggleAssistant()">✕</button>
-      </div>
-      <div class="assistant-quick">
-        <button class="quick-btn" onclick="quickAsk('ما مستواي؟')">مستواي</button>
-        <button class="quick-btn" onclick="quickAsk('نصائح للتعلم')">نصائح</button>
-        <button class="quick-btn" onclick="quickAsk('ضع خطة')">خطة</button>
-        <button class="quick-btn" onclick="quickAsk('اللغات المتاحة')">اللغات</button>
-      </div>
-      <div class="assistant-messages" id="assistantMessages"></div>
-      <div class="assistant-input">
-        <input type="text" id="assistantInput" placeholder="اكتب سؤالك هنا..." onkeypress="handleAssistantKeypress(event)">
-        <button onclick="sendMessage()">إرسال</button>
-      </div>
-    </div>
-  </div>
 
   <!-- التذييل -->
   <footer class="footer">
@@ -416,13 +253,15 @@
     </div>
   </footer>
 
+  <!-- تحميل ملفات JavaScript -->
   <script src="data/content.js"></script>
+  <script src="data/course-content.js"></script>
+  <script src="data/course-content-extra.js"></script>
   <script src="data/vocabulary.js"></script>
   <script src="data/courses.js"></script>
   <script src="data/videos.js"></script>
   <script src="data/resources.js"></script>
   <script src="js/speech.js"></script>
-  <script src="js/quiz.js"></script>
   <script src="js/dynamic-quiz.js"></script>
   <script src="js/lessons.js"></script>
   <script src="js/flashcards.js"></script>
@@ -439,6 +278,5 @@
   <script src="js/pwa.js"></script>
   <script src="js/progress.js"></script>
   <script src="js/app.js"></script>
-  <link rel="manifest" href="manifest.json">
 </body>
 </html>

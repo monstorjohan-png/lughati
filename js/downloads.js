@@ -136,60 +136,88 @@ const VideoDownloader = {
     }
   },
 
-  // تنزيل من رابط مباشر (فيديو أو صورة)
+  // تنزيل من رابط مباشر (فيديو أو صورة) — يجرّب الكُراسات عند فشل CORS
   async saveFromUrl(url, meta) {
     const m = meta || {};
     const id = m.id || (`url_${Date.now()}`);
     const kind = m.kind || this.detectKind(url, '');
     const fallbackTitle = decodeURIComponent(String(url).split('/').pop().split('?')[0]) || 'ملف';
-    this._setBusy(id, 0, 'جاري الاتصال...');
-    try {
-      const res = await fetch(url, { mode: 'cors', credentials: 'omit' });
-      if (!res.ok) throw new Error(`رقم الخطأ ${res.status}`);
-      const total = Number(res.headers.get('content-length')) || 0;
-      const cType = (res.headers.get('content-type') || '').split(';')[0].trim();
-      if (!res.body || !res.body.getReader) {
-        const blob = await res.blob();
+
+    const candidates = [url].concat(this.PROXIES.map((p) => p(url)));
+    let lastErr = null;
+
+    for (let i = 0; i < candidates.length; i++) {
+      const target = candidates[i];
+      this._setBusy(id, 0, i === 0 ? 'جاري الاتصال...' : `جاري المحاولة عبر وسيط (${i}/${candidates.length - 1})...`);
+      try {
+        const res = await fetch(target, { mode: 'cors', credentials: 'omit', cache: 'no-store' });
+        if (!res.ok) throw new Error(`رقم الخطأ ${res.status}`);
+        const total = Number(res.headers.get('content-length')) || 0;
+        const cType = (res.headers.get('content-type') || '').split(';')[0].trim();
+        if (total && total > this.MAX_BYTES) throw new Error('حجم الملف أكبر من الحد المسموح (500MB)');
+
+        let blob;
+        if (!res.body || !res.body.getReader) {
+          blob = await res.blob();
+        } else {
+          const reader = res.body.getReader();
+          const chunks = [];
+          let received = 0;
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            received += value.length;
+            if (received > this.MAX_BYTES) { reader.cancel(); throw new Error('حجم الملف أكبر من الحد المسموح (500MB)'); }
+            this._setBusy(id, total ? Math.min(99, Math.round((received / total) * 100)) : 50,
+              `${this.fmtSize(received)}${total ? ' / ' + this.fmtSize(total) : ''}`);
+          }
+          blob = new Blob(chunks, { type: cType || (kind === 'image' ? 'image/jpeg' : 'video/mp4') });
+        }
+
+        if (blob.size > this.MAX_BYTES) throw new Error('حجم الملف أكبر من الحد المسموح (500MB)');
         this._setBusy(id, 100, 'جاري الحفظ...');
         return await this._save(id, m.title || fallbackTitle, blob, 'url', this.detectKind(url, cType));
+      } catch (e) {
+        lastErr = e;
       }
-      const reader = res.body.getReader();
-      const chunks = [];
-      let received = 0;
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-        received += value.length;
-        if (received > this.MAX_BYTES) {
-          reader.cancel();
-          throw new Error('حجم الملف أكبر من الحد المسموح (500MB)');
-        }
-        if (total) this._setBusy(id, Math.min(99, Math.round((received / total) * 100)), `${this.fmtSize(received)} / ${this.fmtSize(total)}`);
-        else this._setBusy(id, 50, this.fmtSize(received));
-      }
-      const blob = new Blob(chunks, { type: cType || (kind === 'image' ? 'image/jpeg' : 'video/mp4') });
-      return await this._save(id, m.title || fallbackTitle, blob, 'url', this.detectKind(url, cType));
-    } catch (e) {
-      this._clearBusy(id);
-      if (typeof showToast === 'function') showToast('فشل التنزيل: ' + e.message, 'error');
-      return null;
     }
+
+    this._clearBusy(id);
+    if (typeof showToast === 'function') showToast('فشل التنزيل: ' + (lastErr ? lastErr.message : 'تعذر الوصول للرابط'), 'error');
+    return null;
   },
 
   // ---------- مصادر تنزيل فيديوهات يوتيوب ----------
+
+  // المستوى الأول: واجهات cobalt — تُرجع رابط ملف مباشر جاهزاً (أسرع وأثبت نجاحاً)
+  COBALT: [
+    'https://co.otomir23.me',
+    'https://api.cobalt.tools',
+    'https://capi.3kh0.net',
+    'https://cobalt-api.meowing.de',
+    'https://cobalt-backend.canine.tools',
+    'https://cobalt-api.kwiatekmiki.com',
+    'https://co.projectsegfau.lt',
+    'https://capi.ducking.cc'
+  ],
+
+  // المستوى الثاني/الثالث: بث مباشر من مصادر عامة (تعمل أحياناً)
   SOURCES: [
-    { shape: 'piped', url: (id) => `https://pipedapi.kavin.rocks/streams/${id}` },
-    { shape: 'piped', url: (id) => `https://pipedapi.adminforge.de/streams/${id}` },
+    { shape: 'piped', url: (id) => `https://pipedapi.ducks.party/streams/${id}` },
     { shape: 'piped', url: (id) => `https://api.piped.private.coffee/streams/${id}` },
     { shape: 'piped', url: (id) => `https://pipedapi.reallyaweso.me/streams/${id}` },
+    { shape: 'piped', url: (id) => `https://pipedapi.kavin.rocks/streams/${id}` },
+    { shape: 'piped', url: (id) => `https://pipedapi.adminforge.de/streams/${id}` },
     { shape: 'piped', url: (id) => `https://pipedapi.drgns.space/streams/${id}` },
     { shape: 'piped', url: (id) => `https://watchapi.whatever.social/streams/${id}` },
+    { shape: 'invidious', url: (id) => `https://invidious.f5.si/api/v1/videos/${id}` },
+    { shape: 'invidious', url: (id) => `https://inv.tux.pizza/api/v1/videos/${id}` },
+    { shape: 'invidious', url: (id) => `https://iv.ggtyler.dev/api/v1/videos/${id}` },
     { shape: 'invidious', url: (id) => `https://inv.nadeko.net/api/v1/videos/${id}` },
     { shape: 'invidious', url: (id) => `https://yewtu.be/api/v1/videos/${id}` },
     { shape: 'invidious', url: (id) => `https://invidious.nerdvpn.de/api/v1/videos/${id}` },
     { shape: 'invidious', url: (id) => `https://iv.melmac.space/api/v1/videos/${id}` },
-    { shape: 'invidious', url: (id) => `https://invidious.f5.si/api/v1/videos/${id}` },
     { shape: 'invidious', url: (id) => `https://invidious.privacyredirect.com/api/v1/videos/${id}` }
   ],
 
@@ -227,31 +255,100 @@ const VideoDownloader = {
     (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`
   ],
 
-  // البحث عن مصدر صالح مع مهلة زمنية حتى لا يتأخر المستخدم
+  // ===== اختيار المصدر: توازٍ + تعلّم ذاتي من آخر نجاح =====
+  _health() {
+    try { return JSON.parse(localStorage.getItem('dl_health') || '{}'); } catch (e) { return {}; }
+  },
+  _markHealth(key) {
+    try {
+      const h = this._health();
+      h[key] = Date.now();
+      const keys = Object.keys(h);
+      if (keys.length > 40) keys.sort((a, b) => h[a] - h[b]).slice(0, keys.length - 40).forEach((k) => delete h[k]);
+      localStorage.setItem('dl_health', JSON.stringify(h));
+    } catch (e) { /* تجاهل */ }
+  },
+  _rank(items, keyFn) {
+    const h = this._health();
+    return items.slice().sort((a, b) => (h[keyFn(b)] || 0) - (h[keyFn(a)] || 0));
+  },
+
+  // أول نتيجة ناجحة تفوز فوراً دون انتظار البقية
+  _firstWin(promises) {
+    return new Promise((resolve) => {
+      let pending = promises.length;
+      let done = false;
+      if (!pending) { resolve(null); return; }
+      const finish = (v) => {
+        if (done) return;
+        if (v) { done = true; resolve(v); return; }
+        pending -= 1;
+        if (!pending) { done = true; resolve(null); }
+      };
+      promises.forEach((p) => Promise.resolve(p).then(finish, () => finish(null)));
+    });
+  },
+
+  // محاولة cobalt على مثيل واحد
+  async _cobaltTry(base, videoId, quality) {
+    const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), 11000) : null;
+    try {
+      const res = await fetch(base, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          url: `https://www.youtube.com/watch?v=${videoId}`,
+          videoQuality: quality || '720',
+          filenameStyle: 'basic',
+          downloadMode: 'auto'
+        }),
+        cache: 'no-store',
+        signal: ctrl ? ctrl.signal : undefined
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data || data.status === 'error' || !data.url) return null;
+      if (data.status === 'picker') {
+        const first = Array.isArray(data.picker) && data.picker[0];
+        if (!first || !first.url) return null;
+        return { type: 'cobalt', base, url: first.url, filename: first.name || data.title || '' };
+      }
+      return { type: 'cobalt', base, url: data.url, filename: data.filename || data.title || '' };
+    } catch (e) {
+      return null;
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  },
+
+  // البحث عن مصدر صالح — cobalt + البث يُشغَّلان معاً، والأولوية للفائز
   async _resolveSource(videoId, onProgress) {
-    const deadline = Date.now() + 22000;
-    let step = 0;
+    const quality = localStorage.getItem('dl_quality') || '720';
 
-    // المرحلة 1: مباشرة من كل المصادر
-    for (const src of this.SOURCES) {
-      if (Date.now() > deadline) break;
-      step++;
-      if (onProgress) onProgress(`جاري البحث عن مصدر الفيديو (${step}/${this.SOURCES.length})`);
-      const data = await this._fetchJSON(src.url(videoId), false);
-      const norm = this.normalize(data, src.shape);
-      if (norm && norm.streams.length) return norm;
-    }
+    const cobaltTasks = this._rank(this.COBALT, (u) => u)
+      .map((base) => this._cobaltTry(base, videoId, quality));
 
-    // المرحلة 2: عبر كُراسات CORS
-    step = 0;
-    for (const src of this.SOURCES) {
-      if (Date.now() > deadline) break;
-      step++;
-      if (onProgress) onProgress(`جاري مصادر بديلة (${step})...`);
-      const data = await this._fetchJSON(src.url(videoId), true);
-      const norm = this.normalize(data, src.shape);
-      if (norm && norm.streams.length) return norm;
-    }
+    const liveTasks = this._rank(this.SOURCES, (s) => s.url(videoId))
+      .map((src) => this._fetchJSON(src.url(videoId), false).then((d) => {
+        const n = this.normalize(d, src.shape);
+        return (n && n.streams.length) ? { type: 'stream', base: src.url(videoId), title: n.title, streams: n.streams } : null;
+      }));
+
+    if (onProgress) onProgress('جاري البحث عن رابط التنزيل...');
+    const winner = await this._firstWin(cobaltTasks.concat(liveTasks));
+    if (winner) { this._markHealth(winner.base); return winner; }
+
+    // المستوى الأخير: عبر كُراسات CORS
+    if (onProgress) onProgress('جاري مصادر بديلة...');
+    const proxied = this.SOURCES.map((src) =>
+      this._fetchJSON(src.url(videoId), true).then((d) => {
+        const n = this.normalize(d, src.shape);
+        return (n && n.streams.length) ? { type: 'stream', base: src.url(videoId), title: n.title, streams: n.streams } : null;
+      })
+    );
+    const last = await this._firstWin(proxied);
+    if (last) { this._markHealth(last.base); return last; }
     return null;
   },
 
@@ -280,7 +377,7 @@ const VideoDownloader = {
 
   async _fetchBlob(url, onProgress) {
     const attempts = [url].concat(this.PROXIES.map((p) => p(url)));
-    const tryDeadline = Date.now() + 45000;
+    const tryDeadline = Date.now() + 60000;
     let lastErr = null;
     for (const u of attempts) {
       if (Date.now() > tryDeadline) { lastErr = new Error('انتهت مهلة الاتصال'); break; }
@@ -297,7 +394,7 @@ const VideoDownloader = {
         const reader = res.body.getReader();
         const chunks = [];
         let received = 0;
-        const deadline = Date.now() + 240000;
+        const deadline = Date.now() + 600000;
         for (;;) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -347,17 +444,33 @@ const VideoDownloader = {
       const source = await this._resolveSource(videoId, (label) => this._setBusy(videoId, 2, label));
       if (!source) throw new Error('no-source');
 
-      const stream = this.pickStream({ videoStreams: source.streams });
-      if (!stream) throw new Error('no-source');
-      if (stream.quality) this._setBusy(videoId, 3, `جودة ${String(stream.quality).replace(/p$/i, '')}p — جاري التنزيل...`);
+      let fileUrl;
+      let fileTitle = title || source.title || '';
+      let quality = '';
 
-      const blob = await this._fetchBlob(stream.url, (received, total) => {
+      if (source.type === 'cobalt') {
+        // رابط ملف مباشر جاهز (cobalt) — لا حاجة لاختيار جودة يدوياً
+        fileUrl = source.url;
+        if (source.filename) {
+          const clean = String(source.filename).replace(/\.(mp4|webm|mkv|mov)$/i, '').slice(0, 90);
+          if (!title) fileTitle = clean;
+        }
+        this._setBusy(videoId, 3, 'جاري تنزيل ملف الفيديو...');
+      } else {
+        const stream = this.pickStream({ videoStreams: source.streams });
+        if (!stream) throw new Error('no-source');
+        fileUrl = stream.url;
+        quality = stream.quality ? String(stream.quality).replace(/p$/i, '') : '';
+        if (quality) this._setBusy(videoId, 3, `جودة ${quality}p — جاري التنزيل...`);
+      }
+
+      const blob = await this._fetchBlob(fileUrl, (received, total) => {
         const pct = total ? Math.min(99, Math.round((received / total) * 100)) : 50;
         this._setBusy(videoId, pct, `${this.fmtSize(received)}${total ? ' / ' + this.fmtSize(total) : ''}`);
-      });
+      }, quality);
 
       this._setBusy(videoId, 100, 'جاري الحفظ...');
-      const rec = await this._save(videoId, title || source.title || 'فيديو يوتيوب', blob, 'youtube', 'video');
+      const rec = await this._save(videoId, fileTitle || 'فيديو يوتيوب', blob, 'youtube', 'video');
       this._clearBusy(videoId);
       return rec;
     } catch (e) {

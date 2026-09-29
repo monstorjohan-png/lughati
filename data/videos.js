@@ -200,10 +200,6 @@ function getEmbedURL(video) {
     : `https://www.youtube.com/embed/${video.id}?autoplay=1`;
 }
 
-function getThumbURL(video) {
-  return `https://i.ytimg.com/vi/${video.id}/mqdefault.jpg`;
-}
-
 function escapeAttr(s) {
   return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
 }

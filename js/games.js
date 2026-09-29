@@ -10,7 +10,13 @@ let exerciseType = '';
 // ===== الترجمة =====
 function openTranslation(langKey) {
   const lang = langKey || selectedLanguage;
-  exerciseData = [...(TRANSLATION_EXERCISES[lang] || TRANSLATION_EXERCISES.english)];
+  exerciseData = [...(TRANSLATION_EXERCISES[lang] || TRANSLATION_EXERCISES.english || [])];
+
+  if (exerciseData.length === 0) {
+    showToast('تمارين الترجمة لهذه اللغة قيد التطوير');
+    return;
+  }
+
   exerciseType = 'translation';
   exerciseIndex = 0;
   exerciseScore = 0;
@@ -34,6 +40,8 @@ function openListening(langKey) {
 }
 
 function startExercise(title) {
+  const existing = document.getElementById('exerciseModal');
+  if (existing) existing.remove();
   const modal = document.createElement('div');
   modal.className = 'lesson-modal';
   modal.id = 'exerciseModal';
@@ -121,7 +129,12 @@ function checkExercise(selected) {
 
 function finishExercise() {
   const total = exerciseData.length;
-  const accuracy = Math.round((exerciseScore / total) * 100);
+  const accuracy = total > 0 ? Math.round((exerciseScore / total) * 100) : 0;
+  if (total === 0) {
+    closeExercise();
+    showToast('لا توجد أسئلة في هذا التمرين');
+    return;
+  }
   
   // مكافآت
   const currentWords = parseInt(localStorage.getItem('wordsLearned') || 0);
@@ -163,30 +176,4 @@ function closeExercise() {
   if (modal) modal.remove();
 }
 
-// أصوات التغذية الراجعة
-function playSound(type) {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    gain.gain.value = 0.1;
-    
-    if (type === 'correct') {
-      osc.frequency.value = 800;
-      osc.frequency.setValueAtTime(800, ctx.currentTime);
-      osc.frequency.setValueAtTime(1000, ctx.currentTime + 0.1);
-    } else {
-      osc.frequency.value = 300;
-      osc.frequency.setValueAtTime(300, ctx.currentTime);
-      osc.frequency.setValueAtTime(200, ctx.currentTime + 0.1);
-    }
-    
-    osc.start();
-    osc.stop(ctx.currentTime + 0.2);
-  } catch (e) {
-    // تجاهل
-  }
-}
+// playSound() معرّفة في js/app.js (الملف الأساسي) — لا نكررها هنا

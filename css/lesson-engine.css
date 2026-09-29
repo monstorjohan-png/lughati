@@ -1,0 +1,337 @@
+/* ========================================
+   محرّك الدروس الكامل — تبويباتSkills
+   ======================================== */
+
+.lesson-content-full {
+  max-width: 860px;
+  width: 100%;
+}
+
+.lesson-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-5) 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--border);
+}
+
+.lesson-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md, 10px);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lesson-tab:hover {
+  color: var(--text-primary);
+  background: var(--surface, rgba(255, 255, 255, 0.04));
+}
+
+.lesson-tab.active {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(184, 134, 11, 0.1);
+}
+
+.lesson-tab-body {
+  min-height: 240px;
+}
+
+.lesson-objective {
+  background: rgba(184, 134, 11, 0.08);
+  border-right: 3px solid var(--gold);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm, 8px);
+  margin-bottom: var(--space-4);
+  line-height: 1.8;
+}
+
+.content-level {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-4);
+}
+
+.content-card {
+  background: var(--surface, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 12px);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.content-card h4 {
+  color: var(--gold);
+  margin-bottom: var(--space-3);
+  font-size: 1.05rem;
+}
+
+.content-card p {
+  line-height: 1.9;
+  margin-bottom: var(--space-3);
+}
+
+.example-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm, 8px);
+  margin-bottom: var(--space-2);
+}
+
+.example-line span {
+  color: var(--text-primary);
+  font-size: 0.98rem;
+}
+
+.hint-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+/* المفردات */
+.vocab-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.vocab-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--surface, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 8px);
+}
+
+.vocab-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.vocab-main strong {
+  color: var(--gold);
+  font-size: 1.05rem;
+}
+
+.vocab-ipa {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-family: 'Segoe UI', monospace;
+}
+
+.vocab-ar {
+  color: var(--text-primary);
+}
+
+.vocab-sub {
+  grid-column: 1 / -1;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+/* الحوار */
+.dialogue-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.dialogue-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-3);
+  background: var(--surface, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 8px);
+}
+
+.dialogue-who {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0f1b3d;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.dialogue-body p {
+  margin: 0 0 var(--space-1);
+  line-height: 1.7;
+}
+
+.dialogue-ar {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* القراءة والاستماع */
+.reading-text,
+.listening-text {
+  line-height: 2;
+  color: var(--text-primary);
+  padding: var(--space-4);
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: var(--radius-sm, 8px);
+  margin: var(--space-3) 0;
+  font-size: 1rem;
+}
+
+.glossary-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.glossary-row {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm, 6px);
+}
+
+.glossary-row strong {
+  color: var(--gold);
+  min-width: 130px;
+}
+
+/* الكتابة */
+.writing-box {
+  width: 100%;
+  padding: var(--space-4);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 8px);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.9;
+  resize: vertical;
+}
+
+.writing-box:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.feedback-good {
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm, 8px);
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  line-height: 1.8;
+}
+
+.feedback-bad {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm, 8px);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--badge-red, #fca5a5);
+}
+
+/* الاختبار */
+.lesson-quiz-q {
+  margin-bottom: var(--space-4);
+}
+
+.quiz-counter {
+  color: var(--gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.lesson-quiz-q p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-top: var(--space-2);
+}
+
+.quiz-why {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background: rgba(184, 134, 11, 0.1);
+  border-right: 3px solid var(--gold);
+  border-radius: var(--radius-sm, 8px);
+  color: var(--text-primary);
+  line-height: 1.8;
+  font-size: 0.92rem;
+}
+
+/* إطار الفيديو في الدروس بلا محتوى */
+.video-frame {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: var(--radius-md, 12px);
+  overflow: hidden;
+  background: #000;
+  margin-bottom: var(--space-3);
+}
+
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.lesson-desc {
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: var(--space-3);
+}
+
+/* الاستجابة للشاشات الصغيرة */
+@media (max-width: 640px) {
+  .lesson-tabs {
+    gap: var(--space-1);
+  }
+
+  .lesson-tab {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.85rem;
+  }
+
+  .dialogue-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .dialogue-row .btn {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .vocab-row {
+    grid-template-columns: 1fr;
+  }
+}

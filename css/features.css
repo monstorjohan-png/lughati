@@ -580,8 +580,22 @@ body.dark {
   --bg-primary: #151d33;
   --bg-secondary: #0a0f1e;
   --bg-card: #1a2340;
+  --gradient-card: linear-gradient(145deg, #151d33 0%, #1a2340 100%);
   --text-primary: #f0ead6;
   --text-secondary: #a8a3b8;
+  /* نص باهت أفتح ليُقرأ بوضوح على الأسود */
+  --text-muted: #9a97b5;
+  /* ألوان الشارات — نسخ فاتحة لتباين كافٍ على الخلفية الداكنة */
+  --badge-blue: #93c5fd;
+  --badge-blue-tint: rgba(147, 197, 253, 0.16);
+  --badge-green: #6ee7b7;
+  --badge-green-tint: rgba(110, 231, 183, 0.16);
+  --badge-red: #fca5a5;
+  --badge-red-tint: rgba(252, 165, 165, 0.16);
+  --badge-amber: #fcd34d;
+  --badge-amber-tint: rgba(252, 211, 77, 0.16);
+  --badge-gold: #fbbf24;
+  --badge-gold-tint: rgba(251, 191, 36, 0.16);
   background: var(--bg-secondary);
 }
 

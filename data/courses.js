@@ -555,6 +555,45 @@ function openCourse(courseId) {
   document.body.appendChild(modal);
 }
 
+// عرض محتوى الدرس
+function fallbackLessonContent(lesson, course) {
+  const lang = selectedLanguage;
+  const langData = VOCABULARY[lang] || VOCABULARY.english;
+  return `
+    <div class="lesson-content-block">
+      <h4>النقاط الرئيسية</h4>
+      <ul>
+        <li>${esc(lesson.description)}</li>
+        <li>المدة: ${esc(lesson.duration)}</li>
+        <li>النوع: ${esc(lesson.type)}</li>
+        <li>المعلم: ${esc(course.teacher)}</li>
+      </ul>
+    </div>
+    ${lesson.videoId ? `<div class="lesson-content-block"><h4>فيديو الدرس</h4>
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/${esc(lesson.videoId)}" title="${esc(lesson.title)}" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div></div>` : ''}
+    <div class="lesson-content-block">
+      <h4>كلمات الدرس</h4>
+      <div class="lesson-vocab">
+        ${langData.slice(0, 6).map(v => `
+          <div class="vocab-item">
+            <span class="vocab-ar">${esc(v.ar)}</span>
+            <span class="vocab-en" lang="en" dir="ltr">${esc(v.en)}</span>
+            <button class="btn btn-sm" onclick="speak('${jsArg(v.en)}','${lang}')">استماع</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="lesson-content-block">
+      <h4>تحقق من فهمك</h4>
+      <p>بعد مشاهدة الدرس، حاول:</p>
+      <ol>
+        <li>شرح ما تعلمته بكلماتك</li>
+        <li>استخدام كلمات جديدة في جمل</li>
+        <li>تكرار النقاط الرئيسية</li>
+      </ol>
+    </div>`;
+}
+
 function startCourseLesson(courseId, lessonId) {
   let course = null;
   for (const lang in COURSES) {
@@ -566,93 +605,349 @@ function startCourseLesson(courseId, lessonId) {
   const lesson = course.curriculum.find(l => l.id === lessonId);
   if (!lesson) return;
 
-  // تسجيل الدرس كمكتمل
+  // إغلاق نافذة الكورس
+  const courseModal = document.getElementById('courseModal');
+  if (courseModal) courseModal.remove();
+
+  const old = document.getElementById('lessonViewer');
+  if (old) old.remove();
+
+  const L = getLessonContent(courseId, lessonId);
+  const modal = document.createElement('div');
+  modal.className = 'lesson-modal';
+  modal.id = 'lessonViewer';
+
+  const header = `
+    <button class="close-btn" onclick="closeLessonViewer()">إغلاق</button>
+    <div class="lesson-viewer-header">
+      <span class="curriculum-type type-${esc(lesson.type)}">${esc(lesson.type)}</span>
+      <span>${esc(lesson.duration)}</span>
+    </div>
+    <h2>${esc(lesson.title)}</h2>
+    <p class="lesson-desc">${esc(lesson.description)}</p>`;
+
+  if (L) {
+    const tabs = LESSON_TABS.map((t, i) =>
+      `<button class="lesson-tab${i === 0 ? ' active' : ''}" onclick="switchLessonTab('${t.id}','${esc(courseId)}',${esc(lessonId)})">${t.label}</button>`
+    ).join('');
+    modal.innerHTML = `
+      <div class="lesson-content lesson-content-full">
+        ${header}
+        <div class="lesson-tabs">${tabs}</div>
+        <div class="lesson-tab-body" id="lessonTabBody">${tabRules(L)}</div>
+        <div class="lesson-actions">
+          <button class="btn btn-primary" onclick="closeLessonViewer(); openCourse('${esc(courseId)}')">العودة للكورس</button>
+          <button class="btn btn-outline" onclick="speak('${jsArg(L.objective)}','english')">استمع للهدف</button>
+        </div>
+      </div>`;
+  } else {
+    modal.innerHTML = `
+      <div class="lesson-content">
+        ${header}
+        <div class="lesson-viewer-body">${fallbackLessonContent(lesson, course)}</div>
+        <div class="lesson-actions">
+          <button class="btn btn-primary" onclick="closeLessonViewer(); openCourse('${esc(courseId)}')">العودة للكورس</button>
+          <button class="btn btn-outline" onclick="speak('${jsArg(generateSpeechContent(lesson))}','english')">استمع للمحتوى</button>
+        </div>
+      </div>`;
+  }
+
+  document.body.appendChild(modal);
+}
+
+function closeLessonViewer() {
+  const m = document.getElementById('lessonViewer');
+  if (m) m.remove();
+  lessonQuizState = null;
+}
+
+// ============ محرّك الدروس الكامل ============
+// يستخدم COURSE_CONTENT إن وُجد، وإلا يعرض ملخصاً من بيانات الكورس
+
+const LESSON_TABS = [
+  { id: 'rules', label: 'الشرح' },
+  { id: 'vocab', label: 'المفردات' },
+  { id: 'dialogue', label: 'الحوار' },
+  { id: 'listening', label: 'الاستماع' },
+  { id: 'reading', label: 'القراءة' },
+  { id: 'writing', label: 'الكتابة' },
+  { id: 'quiz', label: 'الاختبار' }
+];
+
+function getLessonContent(courseId, lessonId) {
+  if (typeof COURSE_CONTENT === 'undefined' || !COURSE_CONTENT) return null;
+  const course = COURSE_CONTENT[courseId];
+  if (!course) return null;
+  return course[lessonId] || course[String(lessonId)] || null;
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function jsArg(s) {
+  return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r?\n/g, ' ');
+}
+
+// تبويب: قواعد النحو
+function tabRules(L) {
+  return `
+    <p class="lesson-objective"><strong>الهدف:</strong> ${esc(L.objective)}</p>
+    <div class="content-level">المستوى: <strong>${esc(L.level || '')}</strong></div>
+    ${L.rules.map(r => `
+      <div class="content-card">
+        <h4>${esc(r.title)}</h4>
+        <p>${esc(r.body)}</p>
+        ${(r.examples || []).map(ex => `
+          <div class="example-line">
+            <span lang="en" dir="ltr">${esc(ex)}</span>
+            <button class="btn btn-sm" onclick="speak('${jsArg(ex.split('—')[0] || ex)}','english')">استماع</button>
+          </div>
+        `).join('')}
+      </div>
+    `).join('')}`;
+}
+
+// تبويب: المفردات
+function tabVocab(L) {
+  return `
+    <p class="hint-text">اضغط «استماع» لنطق أي كلمة. الترميز الصوتي يساعدك في النطق الصحيح.</p>
+    <div class="vocab-table">
+      ${L.vocab.map(v => `
+        <div class="vocab-row">
+          <div class="vocab-main">
+            <strong lang="en" dir="ltr">${esc(v.en)}</strong>
+            ${v.ipa ? `<span class="vocab-ipa" dir="ltr">${esc(v.ipa)}</span>` : ''}
+            <span class="vocab-ar">${esc(v.ar)}</span>
+          </div>
+          <div class="vocab-sub" lang="en" dir="ltr">${esc(v.ex || '')}</div>
+          <button class="btn btn-sm" onclick="speak('${jsArg(v.en)}','english')">استماع</button>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+// تبويب: الحوار
+function tabDialogue(L) {
+  return `
+    <p class="hint-text">اقرأ الحوار ثم اضغط «استماع» لكل سطر لنطقها.</p>
+    <div class="dialogue-list">
+      ${L.dialogue.map(d => `
+        <div class="dialogue-row">
+          <span class="dialogue-who">${esc(d.who)}</span>
+          <div class="dialogue-body">
+            <p lang="en" dir="ltr">${esc(d.en)}</p>
+            <p class="dialogue-ar">${esc(d.ar)}</p>
+          </div>
+          <button class="btn btn-sm" onclick="speak('${jsArg(d.en)}','english')">استماع</button>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+// تبويب: الاستماع
+function tabListening(L) {
+  const ls = L.listening;
+  return `
+    <div class="content-card">
+      <h4>نص الاستماع</h4>
+      <p class="hint-text">استمع للنص كاملاً ثم أجب على السؤال. يمكنك إعادة الاستماع عدة مرات.</p>
+      <button class="btn btn-primary" onclick="speak('${jsArg(ls.script)}','english')">استمع للنص</button>
+      <p class="listening-text" lang="en" dir="ltr">${esc(ls.script)}</p>
+    </div>
+    <div class="content-card">
+      <h4>${esc(ls.q)}</h4>
+      <div class="quiz-options">
+        ${ls.opts.map((o, i) => `<div class="quiz-option" onclick="this.classList.add('correct')">${esc(o)}</div>`).join('')}
+      </div>
+      <p class="hint-text">الإجابة الصحيحة: ${esc(ls.opts[ls.a])}</p>
+    </div>`;
+}
+
+// تبويب: القراءة
+function tabReading(L) {
+  const r = L.reading;
+  return `
+    <div class="content-card">
+      <h4>${esc(r.title)}</h4>
+      <p class="reading-text" lang="en" dir="ltr">${esc(r.text)}</p>
+      <button class="btn btn-outline btn-sm" onclick="speak('${jsArg(r.text)}','english')">استمع للنص</button>
+    </div>
+    <div class="content-card">
+      <h4>معاني الكلمات</h4>
+      <div class="glossary-list">
+        ${(r.glossary || []).map(g => `<div class="glossary-row"><strong lang="en" dir="ltr">${esc(g.w)}</strong><span>${esc(g.ar)}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="content-card">
+      <h4>${esc(r.q.q)}</h4>
+      <div class="quiz-options">
+        ${r.q.opts.map((o) => `<div class="quiz-option" onclick="this.classList.add('correct')">${esc(o)}</div>`).join('')}
+      </div>
+      <p class="hint-text">الإجابة الصحيحة: ${esc(r.q.opts[r.q.a])}</p>
+    </div>`;
+}
+
+// تبويب: الكتابة
+function tabWriting(L) {
+  const w = L.writing;
+  return `
+    <div class="content-card">
+      <h4>المطلوب</h4>
+      <p>${esc(w.prompt)}</p>
+      <textarea id="lessonWritingBox" class="writing-box" rows="7" placeholder="اكتب إجابتك هنا بالإنجليزية..." lang="en" dir="ltr"></textarea>
+      <div class="lesson-actions" style="margin-top:var(--space-4)">
+        <button class="btn btn-primary" onclick="checkLessonWriting()">تحقق من الكتابة</button>
+        <button class="btn btn-outline" onclick="speak('${jsArg(w.model)}','english')">استمع للنموذج</button>
+      </div>
+      <div id="lessonWritingFeedback"></div>
+    </div>
+    <div class="content-card">
+      <h4>نموذج إجابة</h4>
+      <p class="reading-text" lang="en" dir="ltr">${esc(w.model)}</p>
+    </div>
+    <div class="content-card">
+      <h4>نصائح</h4>
+      <ul>${(w.tips || []).map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+    </div>`;
+}
+
+// تبويب: الاختبار
+function tabQuiz(L, courseId, lessonId) {
+  return `
+    <p class="hint-text">5 أسئلة — تحتاج 60% على الأقل لإتمام الدرس.</p>
+    <div class="lesson-quiz-wrap" id="lessonQuizWrap" data-course="${esc(courseId)}" data-lesson="${esc(lessonId)}">
+      <div class="quiz-progress" style="margin-bottom:var(--space-4)"><div class="progress-bar" id="lessonQuizBar" style="width:0%"></div></div>
+      <div id="lessonQuizBody"></div>
+    </div>`;
+}
+
+let lessonQuizState = null;
+
+function startLessonQuiz(courseId, lessonId) {
+  const L = getLessonContent(courseId, lessonId);
+  if (!L) return;
+  lessonQuizState = { L, courseId, lessonId, i: 0, score: 0 };
+  renderLessonQuiz();
+}
+
+function renderLessonQuiz() {
+  const s = lessonQuizState;
+  if (!s) return;
+  const body = document.getElementById('lessonQuizBody');
+  const bar = document.getElementById('lessonQuizBar');
+  if (!body) return;
+  if (bar) bar.style.width = Math.round((s.i / s.L.quiz.length) * 100) + '%';
+
+  if (s.i >= s.L.quiz.length) {
+    const pct = Math.round((s.score / s.L.quiz.length) * 100);
+    const pass = pct >= 60;
+    body.innerHTML = `
+      <div class="quiz-result">
+        <h3>${pass ? 'أحسنت! اجتزت الدرس' : 'تحتاج مراجعة بسيطة'}</h3>
+        <p>النتيجة: ${s.score}/${s.L.quiz.length} (${pct}%)</p>
+        <div class="lesson-actions" style="justify-content:center;margin-top:var(--space-4)">
+          <button class="btn btn-primary" onclick="startLessonQuiz('${s.courseId}','${s.lessonId}')">إعادة الاختبار</button>
+          <button class="btn btn-outline" onclick="switchLessonTab('rules','${s.courseId}','${s.lessonId}')">مراجعة الشرح</button>
+        </div>
+      </div>`;
+    if (pass) markCourseLessonComplete(s.courseId, s.lessonId);
+    return;
+  }
+
+  const q = s.L.quiz[s.i];
+  body.innerHTML = `
+    <div class="lesson-quiz-q">
+      <span class="quiz-counter">سؤال ${s.i + 1} / ${s.L.quiz.length}</span>
+      <p>${esc(q.q)}</p>
+    </div>
+    <div class="quiz-options">
+      ${q.opts.map((o, i) => `<div class="quiz-option" onclick="answerLessonQuiz(${i},this)">${esc(o)}</div>`).join('')}
+    </div>
+    <div id="lessonQuizWhy"></div>`;
+}
+
+function answerLessonQuiz(idx, el) {
+  const s = lessonQuizState;
+  if (!s) return;
+  const q = s.L.quiz[s.i];
+  const options = el.parentElement.querySelectorAll('.quiz-option');
+  options.forEach((o, i) => {
+    o.style.pointerEvents = 'none';
+    if (i === q.a) o.classList.add('correct');
+    else if (i === idx) o.classList.add('wrong');
+  });
+  if (idx === q.a) { s.score++; playSound('correct'); } else { playSound('wrong'); }
+  const why = document.getElementById('lessonQuizWhy');
+  if (why) why.innerHTML = `<p class="quiz-why">${esc(q.why || '')}</p>`;
+  s.i++;
+  setTimeout(() => renderLessonQuiz(), 1600);
+}
+
+function checkLessonWriting() {
+  const box = document.getElementById('lessonWritingBox');
+  const out = document.getElementById('lessonWritingFeedback');
+  if (!box || !out) return;
+  const text = (box.value || '').trim();
+  if (text.split(/\s+/).filter(Boolean).length < 5) {
+    out.innerHTML = '<p class="feedback-bad">اكتب 5 كلمات على الأقل لتُقيَّم إجابتك.</p>';
+    return;
+  }
+  const words = text.toLowerCase().match(/[a-z']+/g) || [];
+  const uniq = new Set(words).size;
+  const score = Math.min(100, Math.round((words.length >= 20 ? 50 : 35) + (uniq >= 8 ? 30 : 15) + 15));
+  out.innerHTML = `<div class="feedback-good"><strong>تقييم تلقائي: ${score}%</strong><p>عدد الكلمات: ${words.length} — كلمات فريدة: ${uniq}</p><p class="hint-text">هذا تقييم آلي تقريبي — قارن كتابتك بالنموذج وصحّح أخطاءك.</p></div>`;
+  playSound(score >= 60 ? 'correct' : 'wrong');
+}
+
+function markCourseLessonComplete(courseId, lessonId) {
   const completed = JSON.parse(localStorage.getItem('completed_course_lessons') || '{}');
   if (!completed[courseId]) completed[courseId] = [];
-  if (!completed[courseId].includes(lessonId)) {
-    completed[courseId].push(lessonId);
-    localStorage.setItem('completed_course_lessons', JSON.stringify(completed));
+  if (completed[courseId].includes(Number(lessonId))) return;
+  completed[courseId].push(Number(lessonId));
+  localStorage.setItem('completed_course_lessons', JSON.stringify(completed));
 
-    // حساب النسبة
+  // تحديث نسبة إكمال الكورس
+  let course = null;
+  for (const lang in COURSES) {
+    course = COURSES[lang].find(c => c.id === courseId);
+    if (course) break;
+  }
+  if (course) {
     const percent = Math.round((completed[courseId].length / course.curriculum.length) * 100);
     const progress = JSON.parse(localStorage.getItem('course_progress') || '{}');
     progress[courseId] = percent;
     localStorage.setItem('course_progress', JSON.stringify(progress));
-
-    addActivity(`أنهيت درساً في كورس ${course.title}`);
-    checkAchievements();
   }
 
-  // إغلاق نافذة الكورس وإظهار الدرس
-  const courseModal = document.getElementById('courseModal');
-  if (courseModal) courseModal.remove();
-
-  // عرض محتوى الدرس
-  const modal = document.createElement('div');
-  modal.className = 'lesson-modal';
-  modal.id = 'lessonViewer';
-  modal.innerHTML = `
-    <div class="lesson-content">
-      <button class="close-btn" onclick="document.getElementById('lessonViewer').remove()">✕</button>
-      <div class="lesson-viewer-header">
-        <span class="curriculum-type type-${lesson.type}">${lesson.type}</span>
-        <span>${lesson.duration}</span>
-      </div>
-      <h2>${lesson.title}</h2>
-      <p>${lesson.description}</p>
-      <div class="lesson-viewer-body">
-        ${generateLessonContent(lesson, course)}
-      </div>
-      <div class="lesson-actions">
-        <button class="btn btn-primary" onclick="document.getElementById('lessonViewer').remove(); openCourse('${courseId}');">
-          العودة للكورس
-        </button>
-        <button class="btn btn-outline" onclick="speak('${generateSpeechContent(lesson)}', '${selectedLanguage}')">
-          استمع للمحتوى
-        </button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
+  if (typeof addActivity === 'function') addActivity(`اجتزت اختبار درس في كورس ${courseId}`);
+  if (typeof showToast === 'function') showToast('أتممت الدرس بنجاح');
+  if (typeof checkAchievements === 'function') checkAchievements();
+  if (typeof updateProgressBars === 'function') updateProgressBars();
 }
 
-function generateLessonContent(lesson, course) {
-  const lang = selectedLanguage;
-  const langData = VOCABULARY[lang] || VOCABULARY.english;
-
-  return `
-    <div class="lesson-content-block">
-      <h4>📌 النقاط الرئيسية</h4>
-      <ul>
-        <li>${lesson.description}</li>
-        <li>المدة: ${lesson.duration}</li>
-        <li>النوع: ${lesson.type}</li>
-        <li>المعلم: ${course.teacher}</li>
-      </ul>
-    </div>
-    <div class="lesson-content-block">
-      <h4>📝 كلمات الدرس</h4>
-      <div class="lesson-vocab">
-        ${langData.slice(0, 6).map(v => `
-          <div class="vocab-item">
-            <span class="vocab-ar">${v.ar}</span>
-            <span class="vocab-en">${v.en}</span>
-            <button class="btn btn-sm" onclick="speak('${v.en}', '${lang}')">♪</button>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-    <div class="lesson-content-block">
-      <h4>✅ تحقق من فهمك</h4>
-      <p>بعد مشاهدة الدرس، حاول:</p>
-      <ol>
-        <li>شرح ما تعلمته بكلماتك</li>
-        <li>استخدام كلمات جديدة في جمل</li>
-        <li>تكرار النقاط الرئيسية</li>
-      </ol>
-    </div>
-  `;
+// عرض تبويب
+function switchLessonTab(tab, courseId, lessonId) {
+  const L = getLessonContent(courseId, lessonId);
+  if (!L) return;
+  document.querySelectorAll('#lessonViewer .lesson-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  const body = document.getElementById('lessonTabBody');
+  if (!body) return;
+  const renderers = { rules: tabRules, vocab: tabVocab, dialogue: tabDialogue, listening: tabListening, reading: tabReading, writing: tabWriting };
+  if (tab === 'quiz') {
+    body.innerHTML = tabQuiz(L, courseId, lessonId);
+    startLessonQuiz(courseId, lessonId);
+    return;
+  }
+  body.innerHTML = renderers[tab](L);
+  if (tab === 'listening' || tab === 'dialogue' || tab === 'reading') playSound('correct');
 }
+
+// (يُبنى شريط التبويبات داخل startCourseLesson)
 
 function generateSpeechContent(lesson) {
   return `${lesson.title}. ${lesson.description}. This lesson is ${lesson.duration} long and is of type ${lesson.type}.`;

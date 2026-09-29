@@ -1,10 +1,13 @@
 // لغتي — Service Worker للعمل بدون إنترنت
-const CACHE_NAME = 'lughati-v5';
+const CACHE_NAME = 'lughati-v6';
 const ASSETS = [
   '/',
   '/index.html',
   '/favicon.svg',
   '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/icon-maskable-512.png',
   '/css/design-system.css',
   '/css/components.css',
   '/css/animations.css',
@@ -12,13 +15,15 @@ const ASSETS = [
   '/css/features.css',
   '/css/advanced.css',
   '/css/media.css',
+  '/css/lesson-engine.css',
   '/data/content.js',
   '/data/vocabulary.js',
   '/data/courses.js',
+  '/data/course-content.js',
+  '/data/course-content-extra.js',
   '/data/videos.js',
   '/data/resources.js',
   '/js/speech.js',
-  '/js/quiz.js',
   '/js/dynamic-quiz.js',
   '/js/lessons.js',
   '/js/flashcards.js',
@@ -33,6 +38,7 @@ const ASSETS = [
   '/js/progress.js',
   '/js/offline.js',
   '/js/downloads.js',
+  '/js/pwa.js',
   './js/app.js'
 ];
 
