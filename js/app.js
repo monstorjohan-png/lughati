@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // تسجيل Service Worker للعمل بدون إنترنت
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {});
   }
   
   // تهيئة أقسام الفيديوهات والسلاسل

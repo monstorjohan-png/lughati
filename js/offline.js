@@ -108,8 +108,10 @@ const OfflineManager = {
   async registerSW() {
     if ('serviceWorker' in navigator) {
       try {
-        await navigator.serviceWorker.register('/sw.js');
+        // مسار نسبي حتى يعمل على GitHub Pages تحت مجلد فرعي
+        await navigator.serviceWorker.register('sw.js', { scope: './' });
         console.log('Service Worker registered');
+        if (typeof showToast === 'function') showToast('تم تفعيل وضع عدم الاتصال');
       } catch (e) {
         console.log('SW registration skipped:', e.message);
       }
@@ -195,7 +197,7 @@ function showDownloadPanel() {
         <ul>
           <li>حمّل المحتوى مرة واحدة وسيبقى متاحاً دائماً</li>
           <li>استخدم وضع عدم الاتصال في المتصفح</li>
-          <li>الفيديوهات المحفوظة تعمل عند توفر الإنترنت</li>
+          <li>الفيديوهات المنزَّلة في قسم «التنزيلات» تعمل بدون إنترنت تماماً</li>
           <li>كل تقدمك محفوظ محلياً على جهازك</li>
         </ul>
       </div>

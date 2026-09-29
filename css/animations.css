@@ -116,4 +116,10 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* النوافذ تظهر فوراً بلا اعتماد على انتهاء الحركة */
+  .lesson-modal {
+    animation: none !important;
+    opacity: 1 !important;
+  }
 }

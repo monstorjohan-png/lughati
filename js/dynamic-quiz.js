@@ -357,6 +357,7 @@ const DynamicQuiz = {
 let dynQuizQuestions = [];
 let dynQuizIndex = 0;
 let dynQuizScore = 0;
+let dynAnswered = false;
 let dynQuizMode = 'full';
 
 function startDynamicQuiz(mode) {
@@ -378,6 +379,7 @@ function startDynamicQuiz(mode) {
 
   dynQuizIndex = 0;
   dynQuizScore = 0;
+  dynAnswered = false;
 
   const modal = document.createElement('div');
   modal.className = 'lesson-modal';
@@ -418,6 +420,7 @@ function renderDynQuestion() {
   document.getElementById('dynQuestion').textContent = q.question;
 
   const container = document.getElementById('dynOptions');
+  dynAnswered = false;
   container.innerHTML = q.options.map((opt, i) => `
     <div class="quiz-option" onclick="checkDynAnswer(${i})">${opt}</div>
   `).join('');
@@ -435,6 +438,9 @@ function renderDynQuestion() {
 
 function checkDynAnswer(selected) {
   const q = dynQuizQuestions[dynQuizIndex];
+  // منع احتساب الإجابة أكثر من مرة (نقر متكرر سريع)
+  if (!q || dynAnswered) return;
+  dynAnswered = true;
   const options = document.querySelectorAll('#dynOptions .quiz-option');
 
   options.forEach((opt, i) => {

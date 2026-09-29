@@ -256,6 +256,10 @@ function renderSeries() {
               <span>${series.level}</span>
               <span>${series.videos.length} فيديو</span>
             </div>
+            <div class="series-actions">
+              <button class="btn btn-primary btn-sm" onclick="VideoDownloader.downloadSeries('${series.id}')">تنزيل السلسلة كاملة</button>
+              <button class="btn btn-outline btn-sm" onclick="playSeriesVideo('${series.id}', '${series.videos[0].id}', '${escapeAttr(series.videos[0].title)}')">ابدأ المشاهدة</button>
+            </div>
           </div>
           <div class="series-progress">
             <div class="progress-ring" style="--percent: ${percent}; --color: ${series.color}">
@@ -292,7 +296,7 @@ function renderSavedVideos() {
   const saved = JSON.parse(localStorage.getItem('offline_videos') || '[]');
 
   if (saved.length === 0) {
-    container.innerHTML = '<p class="empty-state">لا توجد فيديوهات محفوظة بعد. اضغط على زر التنزيل بجانب أي فيديو لحفظه للمشاهدة بدون إنترنت.</p>';
+    container.innerHTML = '<p class="empty-state">لا توجد فيديوهات محفوظة بعد. اضغط على زر التنزيل بجانب أي فيديو لحفظه، وسيُنزَّل فعلياً إلى قسم «التنزيلات».</p>';
     return;
   }
 
@@ -301,7 +305,7 @@ function renderSavedVideos() {
       <div class="video-thumbnail">
         <img src="https://i.ytimg.com/vi/${v.id}/mqdefault.jpg" alt="${escapeAttr(v.title)}" loading="lazy">
         <div class="video-play">▶</div>
-        <span class="video-badge">محفوظ</span>
+        <span class="video-badge" data-saved-badge="${v.id}">محفوظ</span>
       </div>
       <div class="video-info">
         <h4>${v.title}</h4>
@@ -312,6 +316,16 @@ function renderSavedVideos() {
       </div>
     </div>
   `).join('');
+
+  // تحديد ما نُزِّل فعلياً للعمل بدون إنترنت
+  if (typeof VideoDownloader !== 'undefined') {
+    saved.forEach(v => {
+      VideoDownloader.isDownloaded(v.id).then((has) => {
+        const badge = container.querySelector('[data-saved-badge="' + v.id + '"]');
+        if (badge && has) { badge.textContent = 'منزَّل ✓'; badge.classList.add('is-downloaded'); }
+      }).catch(() => {});
+    });
+  }
 }
 
 // === تشغيل فيديو من سلسلة ===
@@ -353,8 +367,38 @@ function removeSavedVideo(videoId) {
   showToast('تم حذف الفيديو');
 }
 
-// === فتح مشغل الفيديو ===
-function playVideo(videoId, title) {
+// === تنزيل الفيديو فعلياً (ملف حقيقي يُخزَّن في المتصفح) ===
+function saveForOffline(videoId, title) {
+  if (typeof VideoDownloader === 'undefined') {
+    showToast('وحدة التنزيل غير متاحة', 'error');
+    return;
+  }
+  VideoDownloader.isDownloaded(videoId).then((has) => {
+    if (has) {
+      showToast('هذا الفيديو منزَّل مسبقاً — موجود في قسم التنزيلات');
+      return;
+    }
+    // حفظ بالقائمة القديمة (يرجع لقسم المحفوظات)
+    const saved = JSON.parse(localStorage.getItem('offline_videos') || '[]');
+    if (!saved.find(v => v.id === videoId)) {
+      saved.push({ id: videoId, title, url: `https://www.youtube.com/watch?v=${videoId}`, savedAt: new Date().toISOString() });
+      localStorage.setItem('offline_videos', JSON.stringify(saved));
+      renderSavedVideos();
+    }
+    // ثم محاولة تنزيل الملف الفعلي
+    VideoDownloader.downloadYouTube(videoId, title);
+  }).catch(() => VideoDownloader.downloadYouTube(videoId, title));
+}
+
+// === فتح مشغل الفيديو (يفضّل الملف المنزَّل بدون إنترنت) ===
+async function playVideo(videoId, title) {
+  if (typeof VideoDownloader !== 'undefined') {
+    try {
+      const localUrl = await VideoDownloader.getPlayable(videoId);
+      if (localUrl) { VideoDownloader.play(videoId); return; }
+    } catch (e) { /* تابع بالتشغيل العادي */ }
+  }
+
   const modal = document.createElement('div');
   modal.className = 'lesson-modal';
   modal.id = 'videoModal';
@@ -389,4 +433,5 @@ function initVideoSections() {
   renderForeignChannels();
   renderSeries();
   renderSavedVideos();
+  if (typeof renderDownloads === 'function') renderDownloads();
 }
